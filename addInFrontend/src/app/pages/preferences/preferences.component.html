@@ -1,0 +1,43 @@
+<ng-template #loading>
+  <app-loading-spinner class="form-control"></app-loading-spinner>
+</ng-template>
+
+
+<div class="center ms-welcome__main">
+  <div class="user-label ms-font-m"><span class="usercircle">{{((currentUser$ | async)?.email)!.substring(0, 2)}}</span>{{(currentUser$ | async)?.email}}</div>
+
+  <form #saveForm="ngForm" (ngSubmit)="savePreferences(saveForm)">
+    <h4>Select Meeting Space</h4>
+    <div class="form-group">
+      <label class="ms-font-m" for="defspace">Select Space</label>
+      <select *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" class="form-control" name="defspace" (change)="changeDefSpace()">
+        <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
+          {{ dspace.name }}
+        </option>
+      </select>
+    </div>
+
+    <ng-container *ngIf="selectedDefSpace.guid != ''">
+      <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
+        <label class="ms-font-m" for="defaccess">Select Access Method</label>
+        <select [(ngModel)]="selectedDefAccess.guid" class="form-control" name="defaccess" (change)="changeDefAccess()">
+          <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
+            {{ daccess.uri }}
+          </option>
+        </select>
+      </div>
+    </ng-container>
+    <br><br>
+    <app-button type="submit" [label]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"></app-button>
+  </form>
+  <br>
+  <app-button [label]="'Get meeting link'" (onClick)="getMeetinglink()" [disabled]="!(invitation$|async)" style="width: 100%;"></app-button>
+  <br>
+  <br>
+  <br>
+  <br>
+  <app-button [label]="'Logout'" (onClick)="logout()" style="width: 100%;"></app-button>
+</div>
+
+
+

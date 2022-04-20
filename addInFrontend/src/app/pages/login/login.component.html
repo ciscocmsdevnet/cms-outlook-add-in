@@ -1,0 +1,35 @@
+<div class="alert alert-danger" *ngIf="error">
+  <p>{{ error }}</p>
+</div>
+<div *ngIf="isLoading" style="text-align: center;">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+
+
+<div class="center ms-welcome__main">
+  <form #authForm="ngForm" (ngSubmit)="onLogin(authForm)">
+    <h4>Which CMS web app site do you want to use?</h4>
+    <div class="form-group">
+      <!-- <label for="webbridge">Enter webbridge hostname</label> -->
+      <input type="webbridge" id="webbridge" class="form-control" placeholder="Web-bridge URL" ngModel name="webbridge"
+        required />
+    </div>
+    <br>
+    <h4>Provide your Username/Password</h4>
+
+    <div class="form-group">
+      <!-- <label for="email">Username:</label> -->
+      <input type="email" id="email" class="form-control" placeholder="Username" ngModel name="email" required email />
+    </div>
+    <div class="form-group">
+      <!-- <label for="password">Password:</label> -->
+      <input type="password" id="password" class="form-control" placeholder="Password" ngModel name="password"
+        required />
+    </div>
+    <span class="ms-font-m">* we do not store any credentials</span>
+
+    <footer class="first-foot-btn">
+      <app-button class="btnFull" type="submit" [label]="'Login'" [disabled]="!authForm.valid"></app-button>
+    </footer>
+  </form>
+</div>

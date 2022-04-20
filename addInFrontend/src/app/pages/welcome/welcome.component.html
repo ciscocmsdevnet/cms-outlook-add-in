@@ -1,0 +1,34 @@
+<header class="ms-welcome__header">
+    <img src="../../assets/illustration.svg" />
+</header>
+<main class="ms-welcome__main">
+    <div *ngIf="showSpin">
+        <p class="ms-font-m">Token is found. Verifying... <app-loading-spinner class="ms-font-m"></app-loading-spinner></p>
+    </div>
+    <p class="ms-font-xl"><b>{{welcomeMessage}}</b></p>
+    <br>
+    <span class="ms-font-m-plus">Cisco Meeting Server Outlook Scheduler helps you schedule CMS Meetings
+        easily</span>
+    <br>
+    <br>
+    <ul class="ms-List ms-welcome__features">
+        <li class="ms-ListItem">
+            <i class="ms-Icon ms-Icon--Ribbon ms-font-xl"></i>
+            <span class="ms-font-m">Schedule CMS Meetings on-the-go</span>
+        </li>
+        <li class="ms-ListItem">
+            <i class="ms-Icon ms-Icon--Unlock ms-font-xl"></i>
+            <span class="ms-font-m">Works in Microsoft Outlook App</span>
+        </li>
+
+    </ul>
+</main>
+<footer class="first-foot-btn">
+    <app-button class="btnFull" [label]="'Get Started'" routerLink="/login" [disabled]="!buttonIsenabled">
+    </app-button>
+</footer>
+
+
+
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->

@@ -1,0 +1,16 @@
+## Create Certificates
+
+- generate certificate (certificate.cer) and key (certificate.key)
+- place both files in certs folder. Create one in same directory, if not exist
+
+## Create/Run Add-In backend Image
+- docker build -f ./addInBackend/Dockerfile -t addinfastapi ./addInBackend
+- docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi
+
+## Create/Run Add-In Frontend Image
+- docker build -f ./addInFrontend/Dockerfile -t cmsschedulerweb ./addInFrontend
+- docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb
+
+
+## docker run -d -p 443:443 --name cmsschedulerweb --rm -v /home/saurabh/outlookAddInPoC/CMS-DevNet/certs/:/etc/nginx/certs/ cmsschedulerweb
+## docker run -d -p 9443:9443 --name addinfastapi --rm -v /home/saurabh/outlookAddInPoC/CMS-DevNet/certs/:/certs/ addinfastapi
