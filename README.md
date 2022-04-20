@@ -75,10 +75,8 @@ Stage 2: DEPLOY MIDDLEWARE
 
 **You can choose to create docker image from the code base directly or use the images provided in the code base**. Below steps cover on "How to use images provided in this code base"
 1. Login to same linux server and go to repo folder
-2. Extract docker images from this tar: `docker load --input cmsschedular.tar`
-3. 2 new docker images will be loaded. Issue command `docker images` to verify
-   1. cmsschedulerweb: This is the frontend application for middleware which interacts with Outlook Add-in clients
-   2. addinfastapi: This is the backend application for middleware which interacts with CMS web bridge
+2. Create backend Image: `docker build -f ./addInBackend/Dockerfile -t addinfastapi ./addInBackend`
+3. Create frontend Image: `docker build -f ./addInFrontend/Dockerfile -t cmsschedulerweb ./addInFrontend`
 4. Lets run the service:
    1. docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi
    2. docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb
