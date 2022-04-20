@@ -35,9 +35,9 @@ origins = [
     "https://localhost",
     "https://127.0.0.1",
     "https://localhost:4200",
-    "https://raiatea.cisco.com",
-    "https://raiatea.cisco.com:9443",
-    "https://raiatea.cisco.com:4200",
+    "https://<Hostname>",
+    "https://<Hostname>:9443",
+    "https://<Hostname>:4200",
 ]
 
 app.add_middleware(

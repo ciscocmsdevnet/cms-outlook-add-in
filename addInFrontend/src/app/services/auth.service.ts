@@ -16,7 +16,7 @@ export interface AuthResponseData {
 @Injectable()
 export class AuthService {
 
-  BACKENDURL = 'https://raiatea.cisco.com:9443'
+  BACKENDURL = '<Hostname>'
   private nullUser: User = { email: '', token: '', webbridge: '' }
   private usersubject = new BehaviorSubject<User>(this.nullUser);
   user$: Observable<User> = this.usersubject.asObservable();
@@ -24,25 +24,25 @@ export class AuthService {
   // private tokenExpirationTimer: any;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private router: Router,
     private errmessagesService: ErrmessagesService,
-    ) {
-          const userData = localStorage.getItem('userData');
-          if (userData) {
-            let userparsed: User = this.nullUser
-            try {
-              userparsed = JSON.parse(userData);
-              if (userparsed) {
-                this.usersubject.next(userparsed);
-              } else {
-                console.log("NO USER")
-              }
-            } catch (e) {
-              alert(e); // error in the above string (in this case, yes)!
-            }
+  ) {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      let userparsed: User = this.nullUser
+      try {
+        userparsed = JSON.parse(userData);
+        if (userparsed) {
+          this.usersubject.next(userparsed);
+        } else {
+          console.log("NO USER")
+        }
+      } catch (e) {
+        alert(e); // error in the above string (in this case, yes)!
+      }
 
-          }
+    }
   }
 
 
@@ -61,7 +61,7 @@ export class AuthService {
           err => {
             this.errmessagesService.showError(err.error.detail);
             console.log(err.error.detail);
-            return throwError(() => {});
+            return throwError(() => { });
           }
         ),
         tap(resData => {
