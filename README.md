@@ -69,7 +69,7 @@ Stage 1: GENERATE CERTIFICATES
 
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
-Snapshot 1
+![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
 
 Stage 2: DEPLOY MIDDLEWARE
 
