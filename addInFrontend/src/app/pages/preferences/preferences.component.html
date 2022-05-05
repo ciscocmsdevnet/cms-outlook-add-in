@@ -1,43 +1,77 @@
-<ng-template #loading>
-  <app-loading-spinner class="form-control"></app-loading-spinner>
-</ng-template>
 
 
-<div class="center ms-welcome__main">
-  <div class="user-label ms-font-m"><span class="usercircle">{{((currentUser$ | async)?.email)!.substring(0, 2)}}</span>{{(currentUser$ | async)?.email}}</div>
+<div class="base-margin">
+    <div class="col flex flex-right">
+      <div class="row">
+        <div class="user-label">
+          <span class="usercircle">{{((currentUser$ | async)?.email)!.substring(0, 2)}}</span>
+        </div>
+        <div class="col">
+          <div class="row qtr-margin-left text-size-12 text-bold">
+            {{(currentUser$ | async)?.email}}
+          </div>
+          <div class="row qtr-margin-left text-size-12">
+            {{(currentUser$ | async)?.webbridge}}
+          </div>
+          <button class="row btn btn--small btn--link" title="sing out" [innerText]="'Sing Out'" (click)="logout()"> </button>
+        </div>
+      </div>   
+    </div>
+    <hr> 
 
   <form #saveForm="ngForm" (ngSubmit)="savePreferences(saveForm)">
-    <h4>Select Meeting Space</h4>
-    <div class="form-group">
-      <label class="ms-font-m" for="defspace">Select Space</label>
-      <select *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" class="form-control" name="defspace" (change)="changeDefSpace()">
-        <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
-          {{ dspace.name }}
-        </option>
-      </select>
-    </div>
-
-    <ng-container *ngIf="selectedDefSpace.guid != ''">
-      <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
-        <label class="ms-font-m" for="defaccess">Select Access Method</label>
-        <select [(ngModel)]="selectedDefAccess.guid" class="form-control" name="defaccess" (change)="changeDefAccess()">
-          <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
-            {{ daccess.uri }}
+    <h6 class="text-weight-600">Select Meeting Space</h6>
+    <div class="form-group dropdown">
+      <div class="form-group__text select">
+        <label for="defspace">Select Space</label>
+        <select  class="form-group__text select" *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" name="defspace" id="defspace" (change)="changeDefSpace()">
+          <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
+            {{ dspace.name }}
           </option>
         </select>
       </div>
+    </div>
+
+    <ng-container *ngIf="selectedDefSpace.guid != ''" >
+      <div class="form-group dropdown" *ngIf="((defaccess$ | async)!.length > 0); else loading">
+        <div class="form-group__text select">
+          <label for="defaccess">Select Access Method</label>
+          <select [(ngModel)]="selectedDefAccess.guid" name="defaccess" id="defaccess" (change)="changeDefAccess()">
+            <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
+              {{ daccess.uri }}
+            </option>
+          </select>
+        </div>
+      </div>
     </ng-container>
-    <br><br>
-    <app-button type="submit" [label]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"></app-button>
-  </form>
-  <br>
-  <app-button [label]="'Get meeting link'" (onClick)="getMeetinglink()" [disabled]="!(invitation$|async)" style="width: 100%;"></app-button>
-  <br>
-  <br>
-  <br>
-  <br>
-  <app-button [label]="'Logout'" (onClick)="logout()" style="width: 100%;"></app-button>
+    
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col-10">
+        <div class="dbl-margin-top">
+          <button class="btn btn--secondary btn--justified" title="submit" type="submit" [innerText]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"> </button>
+        </div>
+      </div>
+      <div class="col-1"></div>
+    </div>
+  </form>  
+
+  <div class="row base-margin-bottom">
+    <div class="col-1"></div>
+    <div class="col-10">
+      <div class="base-margin-top dbl-margin-bottom">
+        <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'" (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
+      </div>
+    </div>
+    <div class="col-1"></div>
+  </div>
+
 </div>
 
-
-
+<ng-template #loading>
+  <div class="loading-dots base-margin">
+      <span></span>
+      <span></span>
+      <span></span>
+  </div>
+</ng-template>

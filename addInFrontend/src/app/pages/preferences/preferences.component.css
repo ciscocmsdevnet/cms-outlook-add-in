@@ -1,60 +1,13 @@
-.footer {
-    width:80%;
-    position: absolute;
-    z-index: 2;
-    bottom: 0;
-    padding: 15px 0 15px 0;
-}
-
-.user-label {
-    display: inline-block;
-    width: 250px;
-}
-
-.ms-welcome__main {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-flex: 1 0 0;
-    flex: 1 0 0;
-    padding: 10px 20px;
- }
- 
- .ms-welcome__main > h4 {
-     width: 100%;
-     text-align: center;
- }
-
- .horizontalgap {
-    float: left;
-    overflow: hidden;
-    height: 1px;
-    width: 0px;
-  }
-
-.form-control{
-    display: inline-block;
-    width: 100%;
-    max-width: 220px;
-    height: 20px;
-    font-size: small;
-}
 
 .usercircle {
     display:inline-block;
-    font-size:1em;
-    width:2.5em;
-    height:2.5em;
-    line-height:2.5em;
+    font-size:2em;
+    width:2em;
+    height:2em;
+    line-height:2em;
     text-align:center;
     border-radius:50%;
     background:plum;
     vertical-align:middle;
-    margin-right:1em;
     color:white;
     }

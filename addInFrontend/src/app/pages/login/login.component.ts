@@ -13,7 +13,6 @@ import { ErrmessagesService } from 'src/app/services/errmessages.service';
 })
 export class LoginComponent {
   isLoading = false;
-  error: string = '';
 
   constructor(private router: Router, 
     private authService: AuthService,
