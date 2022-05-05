@@ -1,13 +1,13 @@
 <ng-container *ngIf="error$|async as error">
     <div class="alert alert-danger ms-font-m" *ngIf="showError">
         {{ error }}
-        <button class="close" (click)="onCloseError()">X</button>
+        <a class="toast__close icon-close" (click)="onCloseError()"></a>
     </div>    
 </ng-container>
 
 <ng-container *ngIf="message$|async as message">
     <div class="alert alert-success ms-font-m" *ngIf="showMessage">
         {{ message }}
-        <button class="close" (click)="onCloseMessage()">X</button>
+        <a class="toast__close icon-close" (click)="onCloseMessage()"></a>
     </div>
 </ng-container>

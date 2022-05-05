@@ -8,9 +8,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { PreferencesComponent } from './pages/preferences/preferences.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { CmsapiService } from './services/cmsapi.service';
-import { ButtonComponent } from './shared/button/button.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { OutlookService } from './services/outlook.service';
 import { ErrmessagesService } from './services/errmessages.service';
@@ -24,8 +22,6 @@ import { AuthService } from './services/auth.service';
     WelcomeComponent,
     LoginComponent,
     PreferencesComponent,
-    LoadingSpinnerComponent,
-    ButtonComponent,
     MessagesComponent,
     // CommandsComponent,
     

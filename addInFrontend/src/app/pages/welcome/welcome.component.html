@@ -1,34 +1,43 @@
-<header class="ms-welcome__header">
-    <img src="../../assets/illustration.svg" />
+<header class="text-center base-margin">
+    <img title="welcome" src="../../assets/illustration.svg" />
 </header>
-<main class="ms-welcome__main">
-    <div *ngIf="showSpin">
-        <p class="ms-font-m">Token is found. Verifying... <app-loading-spinner class="ms-font-m"></app-loading-spinner></p>
+<div class="dbl-margin">
+    <div class="text-center" *ngIf="showSpin">
+        <h3>Token is found. Verifying... </h3>
+        <div class="loader loader--small flex flex-center">
+            <div class="wrapper">
+                <div class="wheel"></div>
+            </div>
+        </div>
     </div>
-    <p class="ms-font-xl"><b>{{welcomeMessage}}</b></p>
-    <br>
-    <span class="ms-font-m-plus">Cisco Meeting Server Outlook Scheduler helps you schedule CMS Meetings
-        easily</span>
-    <br>
-    <br>
-    <ul class="ms-List ms-welcome__features">
-        <li class="ms-ListItem">
-            <i class="ms-Icon ms-Icon--Ribbon ms-font-xl"></i>
-            <span class="ms-font-m">Schedule CMS Meetings on-the-go</span>
-        </li>
-        <li class="ms-ListItem">
-            <i class="ms-Icon ms-Icon--Unlock ms-font-xl"></i>
-            <span class="ms-font-m">Works in Microsoft Outlook App</span>
-        </li>
+    <div class="dbl-margin-top">
+        <h5 class="text-center text-bold">{{welcomeMessage}}</h5>
+        <div class="flex flex-center section">
+            <p>Cisco Meeting Server Outlook Scheduler helps you schedule CMS Meetings easily</p> 
+        </div>
+        <div class="flex flex-center section dbl-margin-bottom">
+            <ul>
+                <li> 
+                    <i class="ms-Icon ms-Icon--Ribbon text-size-16 qtr-margin-right"></i>
+                    <span>Schedule CMS Meetings on-the-go</span>
+                </li>
+                <li>
+                    <i class="ms-Icon ms-Icon--Unlock text-size-16 qtr-margin-right"></i>
+                    <span>Works in Microsoft Outlook App</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-10">
+      <div class="dbl-margin-top">
+        <button class="btn btn--justified" [innerText]="'Get started'" [disabled]="!buttonIsenabled" title="get started" routerLink="/login"></button>        
+      </div>
+    </div>
+    <div class="col-1"></div>
+</div>
 
-    </ul>
-</main>
-<footer class="first-foot-btn">
-    <app-button class="btnFull" [label]="'Get Started'" routerLink="/login" [disabled]="!buttonIsenabled">
-    </app-button>
-</footer>
 
 
-
-<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
-<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
