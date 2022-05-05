@@ -5,6 +5,7 @@ import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { ErrmessagesService } from './errmessages.service';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -16,7 +17,7 @@ export interface AuthResponseData {
 @Injectable()
 export class AuthService {
 
-  BACKENDURL = 'https://raiatea.cisco.com:9443'
+  BACKENDURL = environment.backendurl
   private nullUser: User = { email: '', token: '', webbridge: '' }
   private usersubject = new BehaviorSubject<User>(this.nullUser);
   user$: Observable<User> = this.usersubject.asObservable();
