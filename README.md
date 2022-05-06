@@ -85,7 +85,7 @@ Stage 2: DEPLOY MIDDLEWARE
 Stage 3: MODIFY MANIFEST FILE/CORS FILES
 	
 1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-2. Update `auth.server.ts` file under `addInFrontent/src/app/services` with middleware hostname. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
+2. Update `environment.ts`, `environment.prod.ts`, file under `addInFrontent/src/environments` with middleware hostname. Set `backendurl` with your middleware hostname (as defined in Stage 1)
 3. Update backend `main.py` origin list with middleware hostname.Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
 
 Stage 4: Add Add-In to Outlook Clients
