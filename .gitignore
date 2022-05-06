@@ -134,3 +134,4 @@ certs/
 node_modules/
 .angular/
 .DS_Store
+.vscode/
