@@ -1,0 +1,25 @@
+{
+
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type":"chrome",
+            "request": "launch",
+            "name": "Chrome localhost",
+            "url": "https://localhost:4200",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Run backend",
+            "type": "python",
+            "python": "${workspaceFolder}${pathSeparator}addInBackend${pathSeparator}venv${pathSeparator}bin${pathSeparator}python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "addInBackend",
+            "console": "integratedTerminal",
+            "env": {"PYTHONPATH": "${workspaceFolder}${pathSeparator}.vscode${pathSeparator}${env:PYTHONPATH}"}
+        },
+       
+    ]
+}

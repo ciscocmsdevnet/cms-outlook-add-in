@@ -1,0 +1,13 @@
+{
+    "python.envFile": "${workspaceFolder}${pathSeparator}.vscode${pathSeparator}.env",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}${pathSeparator}addInBackend",
+    ],
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}${pathSeparator}addInBackend",
+    ],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}${pathSeparator}addInBackend",
+    },
+    "python.defaultInterpreterPath": "${workspaceFolder}${pathSeparator}addInBackend${pathSeparator}venv${pathSeparator}bin${pathSeparator}python",
+}
