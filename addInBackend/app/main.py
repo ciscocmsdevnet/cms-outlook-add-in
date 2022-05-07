@@ -178,3 +178,11 @@ async def getUserInfo(userData: userInfoPayload):
         return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
       elif response.status_code == 200:
         return response.json()
+      
+      
+@app.get("/getPredefinedSites/")
+async def getPredefinedSites():
+  return ["site1.abc.com", "site2.abc.com","site3.abc.com","site4.abc.com","site5.abc.com"]
+      
+      
+      

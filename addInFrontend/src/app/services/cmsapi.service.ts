@@ -197,6 +197,28 @@ export class CmsapiService {
         )
   }
 
+  getPredefinedSites() {
+    return this.http
+    .get<string[]>(
+      this.authService.BACKENDURL+'/getPredefinedSites/'
+    )
+    .pipe(
+      catchError(
+        err => {
+          this.errmessagesService.showError(err.error.detail);
+          console.log(err.error.detail);
+          return throwError(() => {});
+        }
+      ),
+      tap(
+        (m) => {
+          return m.push('Enter your own site')
+        }
+      ),
+      shareReplay()
+    )
+  }
+
 
   savepreferences(userPreferences: Preferences, selectedSpace: Space, selectedAccess: AccessMethod){
     userPreferences.defaultspace = selectedSpace

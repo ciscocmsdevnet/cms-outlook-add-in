@@ -3,7 +3,6 @@ import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AccessMethod, InvitationResponse, Preferences, Space } from 'src/app/models/prefernces.model';
 import { User } from 'src/app/models/user.model';
-import { AuthService } from 'src/app/services/auth.service';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
 import { OutlookService } from 'src/app/services/outlook.service';
@@ -17,6 +16,7 @@ export class PreferencesComponent implements OnInit {
 
   message: string = '';
 
+  public tabIndex = 0;
   public selectedDefSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
   public selectedNewSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
   public selectedDefAccess: AccessMethod = { 'name': '', 'guid': '', 'uri': '' };
@@ -36,7 +36,7 @@ export class PreferencesComponent implements OnInit {
   
 
 
-  constructor(private authService: AuthService,
+  constructor(
     private cmsapiServce: CmsapiService,
     private outlookService: OutlookService,
     private errmessageService: ErrmessagesService,
@@ -44,7 +44,6 @@ export class PreferencesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.currentUser$ = this.authService.user$;
     this.defspaces$ = this.cmsapiServce.defspaces$;
     this.defaccess$ = this.cmsapiServce.defaccess$;
     this.invitation$ = this.cmsapiServce.invitation$;
@@ -69,10 +68,6 @@ export class PreferencesComponent implements OnInit {
         }
       }
     )
-  }
-
-  logout() {
-    this.authService.logout();
   }
 
 

@@ -14,6 +14,11 @@ import { OutlookService } from './services/outlook.service';
 import { ErrmessagesService } from './services/errmessages.service';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { AuthService } from './services/auth.service';
+import { SelectsiteComponent } from './pages/selectsite/selectsite.component';
+import { CuiTabsModule } from '@cisco-ngx/cui-components';
+import { UserHeaderComponent } from './pages/preferences/user-header/user-header.component';
+import { SelectSpaceComponent } from './pages/preferences/select-space/select-space.component';
+import { NewSpaceComponent } from './pages/preferences/new-space/new-space.component';
 
 
 @NgModule({
@@ -23,6 +28,10 @@ import { AuthService } from './services/auth.service';
     LoginComponent,
     PreferencesComponent,
     MessagesComponent,
+    SelectsiteComponent,
+    UserHeaderComponent,
+    SelectSpaceComponent,
+    NewSpaceComponent,
     // CommandsComponent,
     
   ],
@@ -31,7 +40,8 @@ import { AuthService } from './services/auth.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CuiTabsModule,
   ],
   providers: [
     AuthService,

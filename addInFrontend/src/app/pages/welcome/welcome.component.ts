@@ -30,7 +30,7 @@ export class WelcomeComponent implements OnInit {
           {
             
             error: ()=>{
-              this.router.navigateByUrl("login")
+              this.router.navigate(["login", {'webbridge':user.webbridge}])
               
             },
             complete: () => {
