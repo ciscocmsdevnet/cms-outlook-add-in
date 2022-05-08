@@ -69,7 +69,7 @@
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-                <!-- <Control xsi:type="Button" id="ActionButton">
+                <Control xsi:type="Button" id="ActionButton">
                   <Label resid="ActionButton.Label"/>
                   <Supertip>
                     <Title resid="ActionButton.Label"/>
@@ -83,7 +83,7 @@
                   <Action xsi:type="ExecuteFunction">
                     <FunctionName>action</FunctionName>
                   </Action>
-                </Control> -->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -97,17 +97,17 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://localhost:4200/assets/icon-64.png"/>
       </bt:Images>
       <bt:Urls>
-        <!-- <bt:Url id="Commands.Url" DefaultValue="https://localhost:4200/commands"/> -->
+        <bt:Url id="Commands.Url" DefaultValue="https://localhost:4200/#/commands"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:4200"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Cisco Meeting Server"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Meeting Preferences"/>
-        <!-- <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/> -->
+        <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Set Preferences for CMS Meetings."/>
-        <!-- <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/> -->
+        <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

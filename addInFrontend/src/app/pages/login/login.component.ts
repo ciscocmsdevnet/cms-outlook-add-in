@@ -20,6 +20,7 @@ export class LoginComponent {
     private errmessageService: ErrmessagesService) {}
  
   onLogin(form: NgForm): void {
+    this.errmessageService.showError('');
     if (!form.valid) {
       this.errmessageService.showError('Form is not valid');
       return;
@@ -37,8 +38,7 @@ export class LoginComponent {
     authObs = this.authService.login(email, password, webbridge);
 
     authObs.subscribe({
-      next: (resData) => {
-        console.log(resData);
+      next: () => {
         this.isLoading = false;
         form.controls['email'].enable();
         form.controls['password'].enable();
@@ -48,8 +48,7 @@ export class LoginComponent {
         this.isLoading = false;
         form.controls['email'].enable();
         form.controls['password'].enable();
-      },
-      complete: () => console.info('complete') 
+      }    
     });
   }
 

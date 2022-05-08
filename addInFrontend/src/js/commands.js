@@ -22,15 +22,18 @@ Dial sip:rd@alphauk.cisco.com
 */
 
   // meetingBody = "Meeting ID: " + meetingID + "<br><br>Join from a computer, mobile phone or tablet<br>Pre-Alpha: " + meetingLink + "<br><br>Join from a video conferencing system or application<br>Dial " + meetingSIPURL
+  
+  meetingInvitation = JSON.parse(localStorage.getItem('invitation'))['invitation']
+  removedSubject = meetingInvitation.replace(/Subject:/g, "");
+  meetingBody = removedSubject.replace(/"/g, "");
 
-  meetingInvitation = localStorage.getItem('invitation')
-  var removedSubject = meetingInvitation.replace(/Subject:/g, "<br>");
-  let meetingBody = removedSubject.replace(/\\n/g, "<br>");
+  // var removedSubject = meetingInvitation.replace(/Subject:/g, "<br>");
+  // let meetingBody = removedSubject.replace(/\\n/g, "<br>");
 
   Office.context.mailbox.item.body.setAsync(
     meetingBody,
     {
-      coercionType: 'html', // Write text as HTML
+      coercionType: 'text', // Write text as HTML
     },
 
     // Callback method to check that setAsync succeeded
@@ -60,7 +63,7 @@ Dial sip:rd@alphauk.cisco.com
 function setLocation() {
 
   const regex = /(https[a-zA-Z0-9:/\.\?=]+)/gm;
-  const str = localStorage.getItem('invitation');
+  const str = JSON.parse(localStorage.getItem('invitation'))['invitation'];
   let m;
   var meetingLink;
 
@@ -78,11 +81,6 @@ function setLocation() {
       if (asyncResult.status == Office.AsyncResultStatus.Failed) {
         write(asyncResult.error.message);
       }
-      else {
-        // Successfully set the location.
-        // Do whatever is appropriate for your scenario,
-        continue
-      }
     });
 }
 
@@ -91,6 +89,7 @@ function setLocation() {
  * @param event {Office.AddinCommands.Event}
  */
 function action(event) {
+  console.log("ACTION")
   const message = {
     type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
     message: "Space created and Meeting Information added.",
@@ -106,7 +105,6 @@ function action(event) {
   //Query backend to get the meeting information
   parselink() // fill the message body
   setLocation() // fill the location URL
-
 
   // Be sure to indicate when the add-in command function is complete
   event.completed();

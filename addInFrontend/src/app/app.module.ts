@@ -19,6 +19,7 @@ import { CuiTabsModule } from '@cisco-ngx/cui-components';
 import { UserHeaderComponent } from './pages/preferences/user-header/user-header.component';
 import { SelectSpaceComponent } from './pages/preferences/select-space/select-space.component';
 import { NewSpaceComponent } from './pages/preferences/new-space/new-space.component';
+import { CommandsComponent } from './pages/commands/commands.component';
 
 
 @NgModule({
@@ -32,7 +33,7 @@ import { NewSpaceComponent } from './pages/preferences/new-space/new-space.compo
     UserHeaderComponent,
     SelectSpaceComponent,
     NewSpaceComponent,
-    // CommandsComponent,
+    CommandsComponent,
     
   ],
   imports: [

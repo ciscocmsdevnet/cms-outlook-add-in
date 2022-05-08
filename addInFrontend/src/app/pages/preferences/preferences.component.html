@@ -1,58 +1,14 @@
 
 <div class="base-margin">
     <app-user-header></app-user-header>
-
-    <cui-tabs [(activeTabIndex)]="tabIndex">
+    <cui-tabs [(activeTabIndex)]="tabIndex" (activeTabIndexChange)="onTabChange()" >
       <cui-tab label="Select Meeting Space">
-        
-        <form #saveForm="ngForm" (ngSubmit)="savePreferences(saveForm)">
-          <!-- <h6 class="text-weight-600">Select Meeting Space</h6> -->
-          <div class="form-group dropdown">
-            <div class="form-group__text select">
-              <label for="defspace">Select Space</label>
-              <select  class="form-group__text select" *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" name="defspace" id="defspace" (change)="changeDefSpace()">
-                <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
-                  {{ dspace.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-      
-          <ng-container *ngIf="selectedDefSpace.guid != ''" >
-            <div class="form-group dropdown" *ngIf="((defaccess$ | async)!.length > 0); else loading">
-              <div class="form-group__text select">
-                <label for="defaccess">Select Access Method</label>
-                <select [(ngModel)]="selectedDefAccess.guid" name="defaccess" id="defaccess" (change)="changeDefAccess()">
-                  <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
-                    {{ daccess.uri }}
-                  </option>
-                </select>
-              </div>
-            </div>
-          </ng-container>
-          
-          <div class="row">
-            <div class="col-1"></div>
-            <div class="col-10">
-              <div class="dbl-margin-top">
-                <button class="btn btn--secondary btn--justified" title="submit" type="submit" [innerText]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"> </button>
-              </div>
-            </div>
-            <div class="col-1"></div>
-          </div>
-        </form>  
-
-
-
+        <app-select-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-select-space>
       </cui-tab>
       <cui-tab label="Create New Space">
-        <h1>Some other content!</h1>
+        <app-new-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-new-space>
       </cui-tab>
     </cui-tabs>
-
-
-
-  
 
   <div class="row base-margin-bottom">
     <div class="col-1"></div>
@@ -66,13 +22,7 @@
 
 </div>
 
-<ng-template #loading>
-  <div class="loading-dots base-margin">
-      <span></span>
-      <span></span>
-      <span></span>
-  </div>
-</ng-template>
+
 
 
 

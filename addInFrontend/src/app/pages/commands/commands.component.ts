@@ -1,17 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { OutlookService } from 'src/app/services/outlook.service';
-
-
+declare function action(event:any): any;
 @Component({
   selector: 'app-commands',
   templateUrl: './commands.component.html',
 })
 export class CommandsComponent implements OnInit {
 
-  constructor(private outlookService: OutlookService) { }
+  constructor(
+    ) {}
 
   ngOnInit(): void {
-    this.outlookService.run_command();
+    this.action()
+  }  
+
+  action() {
+    action(Office);
   }
 
 }

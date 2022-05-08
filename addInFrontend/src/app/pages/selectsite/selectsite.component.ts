@@ -36,6 +36,7 @@ export class SelectsiteComponent implements OnInit {
   }
 
   onNext(form: NgForm): void {
+    this.errmessageService.showError('');
     if (!form.valid) {
       this.errmessageService.showError('Please fill the form');
       return;

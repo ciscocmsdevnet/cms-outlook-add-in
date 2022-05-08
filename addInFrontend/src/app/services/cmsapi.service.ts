@@ -25,8 +25,8 @@ export class CmsapiService {
   userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
 
   private invitationsubject = new BehaviorSubject<InvitationResponse|null>(null);
+  private prev_invitation: InvitationResponse|null = null;
   invitation$: Observable<InvitationResponse|null> = this.invitationsubject.asObservable();
-
 
   constructor( private http: HttpClient, 
                private authService: AuthService,
@@ -34,8 +34,7 @@ export class CmsapiService {
     
     this.authService.user$.subscribe( (user) => { this.user = user})
     this.getCurrentUserPref()
-    this.getCurrentInvitation()
-
+    this.getCurrentInvitation()    
   }
 
   private getCurrentUserPref(){
@@ -148,8 +147,12 @@ export class CmsapiService {
     .pipe(
       catchError(
         err => {
-          this.errmessagesService.showError(err.error.detail);
-          console.log(err.error.detail);
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
           return throwError(() => {});
         }
       ),
@@ -184,8 +187,12 @@ export class CmsapiService {
     .pipe(
       catchError(
         err => {
-          this.errmessagesService.showError(err.error.detail);
-          console.log(err.error.detail);
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
           return throwError(() => {});
         }
       ),
@@ -197,6 +204,30 @@ export class CmsapiService {
         )
   }
 
+  updateInvitation(index: number) {
+    if (index==1) {
+      if (this.invitationsubject.value) {
+        this.prev_invitation = this.invitationsubject.value
+        this.invitationsubject.next(null)
+      }
+    }else{
+      if (this.prev_invitation) {
+        this.invitationsubject.next(this.prev_invitation)
+      } else {
+        let inv = localStorage.getItem('invitation')
+        if (inv) {
+          this.invitationsubject.next(JSON.parse(inv))
+        }
+      }
+    }
+  }
+
+  clearInvitationSubj(){
+    this.prev_invitation = null
+    this.invitationsubject.next(null)
+  }
+
+
   getPredefinedSites() {
     return this.http
     .get<string[]>(
@@ -205,8 +236,12 @@ export class CmsapiService {
     .pipe(
       catchError(
         err => {
-          this.errmessagesService.showError(err.error.detail);
-          console.log(err.error.detail);
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
           return throwError(() => {});
         }
       ),

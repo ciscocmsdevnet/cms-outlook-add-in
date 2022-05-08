@@ -1,1 +1,40 @@
-<p>new-space works!</p>
+<form  #newspaceForm="ngForm" (ngSubmit)="onCreateSpace(newspaceForm)">
+    <div class="form-group">
+        <div class="form-group__text">
+            <input 
+            id="space_name" 
+            placeholder="Enter Space Name" 
+            name="space_name" 
+            ngModel
+            required
+            >
+        </div> 
+    </div>
+    <div class="form-group dropdown">
+        <div class="form-group__text select">
+          <label for="space_temps">Select Space Template</label>
+          <select  class="form-group__text select" *ngIf="spacetemps.length > 0; else loading" ngModel name="space_temps" id="space_temps" required>
+            <option *ngFor="let spacetemp of spacetemps" [ngValue]="spacetemp">
+              {{ spacetemp }}
+            </option>
+          </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1"></div>
+            <div class="col-10">
+            <div class="dbl-margin-top">
+                <button class="btn btn--justified" type="submit" [innerText]="'Create'" [disabled]="!newspaceForm.valid" title="Create"></button>
+            </div>
+            </div>
+        <div class="col-1"></div>
+    </div>
+</form>
+
+<ng-template #loading>
+    <div class="loading-dots base-margin">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</ng-template>

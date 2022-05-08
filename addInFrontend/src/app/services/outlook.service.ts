@@ -1,6 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { InvitationResponse } from "../models/prefernces.model";
 import { CmsapiService } from "./cmsapi.service";
 import { ErrmessagesService } from "./errmessages.service";
 
@@ -8,7 +6,12 @@ import { ErrmessagesService } from "./errmessages.service";
 export class OutlookService {
 
   private invitation: string = '';
-  constructor(private cmsapiService: CmsapiService, private errmessageService: ErrmessagesService ) {
+  constructor(
+    private cmsapiService: CmsapiService, 
+    private errmessageService: ErrmessagesService ) {
+
+  }
+  run_command() {
     this.cmsapiService.invitation$.subscribe(
       {
         next: (inv) => {
@@ -18,19 +21,13 @@ export class OutlookService {
         }
       }
     )
-  }
 
-  run_command() {
-
-    if (this.invitation == '') {
-      console.log(localStorage.getItem('invitation'));
-    } else {
-      console.log(this.invitation);
-    }
+    
     
 
     Office.onReady(() => {
     });
+
     
     this.parselink();
     this.setLocation();
@@ -48,11 +45,12 @@ export class OutlookService {
     } else {
       meetingInvitation = this.invitation;
     }
+
+
    
     var removedSubject = meetingInvitation.replace(/Subject:/g, "");
     var meetingBody = removedSubject.replace(/"/g, "");
     // let meetingBody = removedQuotes.replace(/\\n/g, "<br></div>");
-    console.log(Office)
     Office.context.mailbox.item!.body.setSelectedDataAsync(
         meetingBody,
         {

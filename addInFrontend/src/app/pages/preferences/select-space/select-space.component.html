@@ -1,5 +1,4 @@
 <form #saveForm="ngForm" (ngSubmit)="savePreferences(saveForm)">
-    <!-- <h6 class="text-weight-600">Select Meeting Space</h6> -->
     <div class="form-group dropdown">
       <div class="form-group__text select">
         <label for="defspace">Select Space</label>
@@ -33,4 +32,13 @@
       </div>
       <div class="col-1"></div>
     </div>
-  </form> 
+</form> 
+
+
+<ng-template #loading>
+    <div class="loading-dots base-margin">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</ng-template>

@@ -60,9 +60,13 @@ export class AuthService {
       .pipe(
         catchError(
           err => {
-            this.errmessagesService.showError(err.error.detail);
-            console.log(err.error.detail);
-            return throwError(() => { });
+            if (err.error.detail) {
+              this.errmessagesService.showError(err.error.detail);
+            } 
+            else if (err.message) {
+              this.errmessagesService.showError(err.message)
+            }          
+            return throwError(() => {});
           }
         ),
         tap(resData => {

@@ -13,101 +13,28 @@ import { OutlookService } from 'src/app/services/outlook.service';
   styleUrls: ['./preferences.component.css']
 })
 export class PreferencesComponent implements OnInit {
-
-  message: string = '';
-
   public tabIndex = 0;
-  public selectedDefSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedNewSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedDefAccess: AccessMethod = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedNewAccess: AccessMethod = { 'name': '', 'guid': '', 'uri': '' };
-  userPreferences: Preferences = { 'defaultspace': this.selectedDefSpace, 'defaultaccessmethod': this.selectedDefAccess };
-  
+  public isGetLinkButtonActive = false
 
-  currentUser$!: Observable<User>;
-  error: any;
-
-  defspaces$: Observable<Space[]> | undefined;
-  newspaces$: Observable<Space[]> | undefined;
-  defaccess$: Observable<AccessMethod[]> | undefined;
-  newaccess$: Observable<AccessMethod[]> | undefined;
-  userprefs$: Observable<Preferences | null> | undefined;
   invitation$: Observable<InvitationResponse | null> | undefined;
   
-
-
   constructor(
-    private cmsapiServce: CmsapiService,
+    public cmsapiServce: CmsapiService,
     private outlookService: OutlookService,
-    private errmessageService: ErrmessagesService,
+    public errmessageService: ErrmessagesService,
   ) { }
 
-
   ngOnInit(): void {
-    this.defspaces$ = this.cmsapiServce.defspaces$;
-    this.defaccess$ = this.cmsapiServce.defaccess$;
-    this.invitation$ = this.cmsapiServce.invitation$;
-    this.cmsapiServce.getUserSpaces().subscribe();
-    this.getStoredInformation()
+    this.invitation$ = this.cmsapiServce.invitation$
   }
-
-
-  getStoredInformation() {
-    this.userprefs$ = this.cmsapiServce.userpref$;
-    this.userprefs$.subscribe(
-      {
-        next: (userpref) => {
-          if (userpref) {
-            this.userPreferences = userpref;
-            this.selectedDefSpace = userpref.defaultspace;
-            this.selectedDefAccess = userpref.defaultaccessmethod;
-            if (this.selectedDefAccess.guid != '') {
-              this.cmsapiServce.getSpaceAccessMethods(this.selectedDefSpace).subscribe()
-            }
-          } 
-        }
-      }
-    )
-  }
-
-
-  savePreferences(form: NgForm) {
-    if (!form.valid) {
-      return;
-    }
-    this.userPreferences.defaultspace = this.selectedDefSpace
-    this.userPreferences.defaultaccessmethod = this.selectedDefAccess
-    if (this.selectedNewSpace.guid == '') {
-      this.cmsapiServce.savepreferences(this.userPreferences, this.selectedDefSpace, this.selectedDefAccess)
-    } else {
-      this.cmsapiServce.savepreferences(this.userPreferences, this.selectedNewSpace, this.selectedNewAccess)
-    }
-    this.errmessageService.showMesssage('Preferences saved!');
-  }
-
 
   getMeetinglink() {
     this.errmessageService.showMesssage('');
     this.outlookService.run_command()
   }
-
-  changeDefSpace() {
-    this.message = ''
-    this.selectedDefAccess.guid = '';
-    if (this.selectedDefSpace.guid != '') {
-      this.cmsapiServce.getSpaceAccessMethods(this.selectedDefSpace).subscribe()
-    } 
-   
-  }
-
-  changeDefAccess() {
-    this.message = ''
-    if (this.selectedDefSpace.guid != '' && this.selectedDefAccess.guid != '') {
-      this.cmsapiServce.getMeetingInformation(this.userPreferences.defaultspace, this.userPreferences.defaultaccessmethod).subscribe()
-    } 
-  }
-
   
-
+  onTabChange(){
+    this.cmsapiServce.updateInvitation(this.tabIndex)  
+  }
 
 }
