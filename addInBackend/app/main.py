@@ -25,6 +25,10 @@ class getMeetingEmailInvitationInput(getSpaceAccessMethodInput):
 
 class userInfoPayload(getSpacesInput):
     username: str
+    
+class defaultSpace(BaseModel):
+  spaceGUID: str
+  accessMethodGUID: str
 
 app = FastAPI()
 
@@ -180,9 +184,12 @@ async def getUserInfo(userData: userInfoPayload):
         return response.json()
       
       
-@app.get("/getPredefinedSites/")
-async def getPredefinedSites():
+@app.get("/webbriddges/")
+async def webbriddges():
   return ["site1.abc.com", "site2.abc.com","site3.abc.com","site4.abc.com","site5.abc.com"]
       
-      
-      
+@app.post("/defaultSpace/")
+async def defaultSpace(default: defaultSpace):
+  print(default.spaceGUID, default.accessMethodGUID)
+  return 'OK'
+  

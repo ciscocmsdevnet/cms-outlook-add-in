@@ -116,16 +116,16 @@ export class CmsapiService {
         }),
         tap(
           (resData: any[]) => {
-            let defaultspaces: Space[] = [];
+            let userspaces: Space[] = [];
             if (resData.length > 0) {
               resData.forEach((space: Space) => {
-                defaultspaces.push({guid: space.guid, name: space.name, uri: space.uri})
+                userspaces.push({guid: space.guid, name: space.name, uri: space.uri})
               });
             } else {
-              defaultspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
+              userspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
             }
-            defaultspaces.unshift({guid: '', name: '', uri:''})
-            this.defspacesubject.next(defaultspaces)
+            userspaces.unshift({guid: '', name: '', uri:''})
+            this.defspacesubject.next(userspaces)
           },
         ),
         shareReplay()
@@ -231,7 +231,7 @@ export class CmsapiService {
   getPredefinedSites() {
     return this.http
     .get<string[]>(
-      this.authService.BACKENDURL+'/getPredefinedSites/'
+      this.authService.BACKENDURL+'/webbriddges/'
     )
     .pipe(
       catchError(
@@ -254,12 +254,38 @@ export class CmsapiService {
     )
   }
 
+  private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
+    return this.http
+    .post<any>(
+      this.authService.BACKENDURL+'/defaultSpace/',
+      {
+        spaceGUID: selectedSpaceGuid,
+        accessMethodGUID: selectedAccessGiud
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      shareReplay()
+    )
+  }
+
 
   savepreferences(userPreferences: Preferences, selectedSpace: Space, selectedAccess: AccessMethod){
     userPreferences.defaultspace = selectedSpace
     userPreferences.defaultaccessmethod = selectedAccess
     localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
     localStorage.setItem('invitation', JSON.stringify(this.invitationsubject.getValue()));
+    this.saveDefaultSpaceAndMethodOnBackend(selectedSpace.guid, selectedAccess.guid).subscribe()
   }
 
 
