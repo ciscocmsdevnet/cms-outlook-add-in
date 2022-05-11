@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthResponseData, AuthService } from '../../services/auth.service';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
+import { OutlookService } from 'src/app/services/outlook.service';
 
 
 @Component({
@@ -11,13 +12,22 @@ import { ErrmessagesService } from 'src/app/services/errmessages.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isLoading = false;
+  username$!: Observable<string>;
+  
 
   constructor(private router: Router, 
     private route: ActivatedRoute,
     private authService: AuthService,
-    private errmessageService: ErrmessagesService) {}
+    private errmessageService: ErrmessagesService,
+    private outlookService: OutlookService) {
+    }
+
+  ngOnInit(): void {
+    this.outlookService.get_outlook_username()  
+    this.username$ = this.outlookService.loginusername$
+  }
  
   onLogin(form: NgForm): void {
     this.errmessageService.showError('');

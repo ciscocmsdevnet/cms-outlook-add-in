@@ -10,7 +10,7 @@ export interface Space {
      uri: string
 }
 
-export interface Template {
+export interface SpaceTemplate {
      id: string,
      name: string
 }

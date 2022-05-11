@@ -4,7 +4,7 @@
     <div class="section">
       <h6 class="text-weight-600">Provide your Username/Password</h6>
       <div class="form-group__text">
-        <input class="qtr-margin-bottom" type="email" id="email" placeholder="Username" ngModel name="email" required email />
+        <input class="qtr-margin-bottom" type="email" id="email" placeholder="Username" [ngModel]="username$ | async" name="email" required email />
         <input type="password" id="password" placeholder="Password" ngModel name="password" required />
       </div>  
       <span class="text-weight-600">* we do not store any credentials</span>

@@ -15,7 +15,7 @@
           <label for="space_temps">Select Space Template</label>
           <select  class="form-group__text select" *ngIf="spacetemps.length > 0; else loading" ngModel name="space_temps" id="space_temps" required>
             <option *ngFor="let spacetemp of spacetemps" [ngValue]="spacetemp">
-              {{ spacetemp }}
+              {{ spacetemp.name }}
             </option>
           </select>
         </div>

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
-import { AccessMethod, AccessMethodResponse, InvitationResponse, Preferences, Space } from '../models/prefernces.model';
+import { AccessMethod, AccessMethodResponse, InvitationResponse, Preferences, Space, SpaceTemplate } from '../models/prefernces.model';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 import { ErrmessagesService } from './errmessages.service';
@@ -254,12 +254,44 @@ export class CmsapiService {
     )
   }
 
+  getUserSpaceTemplates() {
+    return this.http
+    .post<SpaceTemplate[]>(
+      this.authService.BACKENDURL+'/userSpaceTemplates/',
+      {
+        authToken: this.user?.token,
+        webBridgeURL: this.user?.webbridge
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      // tap(
+      //   (m) => {
+      //     return m.push('Enter your own site')
+      //   }
+      // ),
+      shareReplay()
+    )
+  }
+
   private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
     return this.http
     .post<any>(
       this.authService.BACKENDURL+'/defaultSpace/',
       {
         spaceGUID: selectedSpaceGuid,
+        authToken: this.user?.token,
+        webBridgeURL: this.user?.webbridge,
         accessMethodGUID: selectedAccessGiud
       },
     )
@@ -277,6 +309,11 @@ export class CmsapiService {
       ),
       shareReplay()
     )
+  }
+
+  createSpaceFromTemplate(space_name: string, template_id: string) {
+    console.log("created SpaceFromTemplate", space_name, template_id)
+    return of("created SpaceFromTemplate")
   }
 
 

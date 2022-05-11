@@ -183,13 +183,16 @@ async def getUserInfo(userData: userInfoPayload):
       elif response.status_code == 200:
         return response.json()
       
-      
+####### MOCK API #######
 @app.get("/webbriddges/")
 async def webbriddges():
   return ["site1.abc.com", "site2.abc.com","site3.abc.com","site4.abc.com","site5.abc.com"]
       
 @app.post("/defaultSpace/")
-async def defaultSpace(default: defaultSpace):
+async def defaultSpace(default: getMeetingEmailInvitationInput):
   print(default.spaceGUID, default.accessMethodGUID)
   return 'OK'
-  
+
+@app.post("/userSpaceTemplates/")
+async def userSpaceTemplates(getSpacesInput: getSpacesInput):
+  return [{"id":"102", "name":"spaceTemplate1"},{"id":"103", "name":"spaceTemplate2"}]
