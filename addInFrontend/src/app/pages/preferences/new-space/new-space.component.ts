@@ -37,6 +37,7 @@ export class NewSpaceComponent implements OnInit {
       {
         complete: ()=>{
           // change to returned value from createSpaceFromTemplate
+          this.cmsapiServce.getUserSpaces().subscribe();
           this.cmsapiServce.getMeetingInformation({"guid":'fed04266-6afa-4cd1-9730-05d14e0e8532','name':"aaa",'uri':''}, {"guid":'00000000-0000-0000-0000-000000000001','name':"aaa",'uri':''}).subscribe(
             {
               complete: () => {
