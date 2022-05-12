@@ -195,4 +195,12 @@ async def defaultSpace(default: getMeetingEmailInvitationInput):
 
 @app.post("/userSpaceTemplates/")
 async def userSpaceTemplates(getSpacesInput: getSpacesInput):
+  print(getSpacesInput.authToken)
   return [{"id":"102", "name":"spaceTemplate1"},{"id":"103", "name":"spaceTemplate2"}]
+class user(BaseModel):
+    username: str
+    
+@app.post("/getInstantMeeting/")
+async def getInstantMeeting(user: user):
+  print(user.username)
+  return {"invitation":f"HELLO {user.username}"}
