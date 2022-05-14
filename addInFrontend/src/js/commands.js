@@ -4,6 +4,7 @@
  */
 
 /* global global, Office, self, window */
+BACKENDURL = 'https://raiatea.cisco.com:9443'
 
 Office.onReady(() => {
   // If needed, Office.js is ready to be called
@@ -18,6 +19,10 @@ function isInvitation() {
   return meetingInvitation
 }
 
+function saveIntitation(meetingInvitation) {
+  localStorage.setItem('invitation', JSON.stringify(meetingInvitation));
+}
+
 function pickusername() {
   if (Office.context.mailbox) {
     if (Office.context.mailbox.userProfile) {
@@ -29,7 +34,8 @@ function pickusername() {
 
 async function getInstantMeeting(username) {
   // CHANGE API LINK
-  let resp = await fetch('https://raiatea.cisco.com:9443/getInstantMeeting/', {
+  
+  let resp = await fetch(BACKENDURL+'/getInstantMeeting/', {
   method: 'POST',
   headers: {
     'Accept': 'application/json, text/plain, */*',
@@ -139,7 +145,8 @@ async function action(event) {
     let username = pickusername();
     let meetingInvitation = await getInstantMeeting(username);
     parselink(meetingInvitation["invitation"]); 
-    setLocation(meetingInvitation["invitation"]); 
+    setLocation(meetingInvitation["invitation"]);
+    saveIntitation(meetingInvitation); 
   }
   
   // Be sure to indicate when the add-in command function is complete
