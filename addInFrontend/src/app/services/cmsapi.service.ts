@@ -12,21 +12,17 @@ export class CmsapiService {
 
   user: User | undefined;
 
-  private errorsubject = new BehaviorSubject<string>('');
-  error$: Observable<String> = this.errorsubject.asObservable();
-
-  private defspacesubject = new BehaviorSubject<Space[]>([]);
-  defspaces$: Observable<Space[]> = this.defspacesubject.asObservable();
-
-  private defaccesssubject = new BehaviorSubject<AccessMethod[]>([]);
-  defaccess$: Observable<AccessMethod[]> = this.defaccesssubject.asObservable();
-
+  private spaces_subject = new BehaviorSubject<Space[]>([]);
+  private accessmethods_subject = new BehaviorSubject<AccessMethod[]>([]);
   private userprefsubject = new BehaviorSubject<Preferences|null>(null);
-  userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
-
   private invitationsubject = new BehaviorSubject<InvitationResponse|null>(null);
-  private prev_invitation: InvitationResponse|null = null;
+
+  spaces$: Observable<Space[]> = this.spaces_subject.asObservable();
+  accessmethods$: Observable<AccessMethod[]> = this.accessmethods_subject.asObservable();
+  userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
   invitation$: Observable<InvitationResponse|null> = this.invitationsubject.asObservable();
+
+  private prev_invitation: InvitationResponse|null = null;
 
   constructor( private http: HttpClient, 
                private authService: AuthService,
@@ -71,28 +67,7 @@ export class CmsapiService {
   }
 
   
-  validate() {
-    return this.http
-    .post(
-      this.authService.BACKENDURL+'/validate',
-      {
-        webBridgeURL: this.user!.webbridge,
-        authToken: this.user!.token,
-        username: this.user!.email,
-      },
-    )
-    .pipe(
-      catchError(
-        err => {
-          console.log(err.error.detail);
-          this.errmessagesService.showError("Token has been expired. Please login again.");
-          return throwError(() => {});
-        }
-      ),
-      shareReplay()
-      )
-  }
-
+  
   getUserSpaces() {
     this.errmessagesService.showMesssage('');
     return this.http
@@ -125,7 +100,7 @@ export class CmsapiService {
               userspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
             }
             userspaces.unshift({guid: '', name: '', uri:''})
-            this.defspacesubject.next(userspaces)
+            this.spaces_subject.next(userspaces)
           },
         ),
         shareReplay()
@@ -133,7 +108,7 @@ export class CmsapiService {
   }
 
   getSpaceAccessMethods(selectedSpace: Space) {
-    this.defaccesssubject.next([])
+    this.accessmethods_subject.next([])
     this.errmessagesService.showMesssage('');
     return this.http
     .post<AccessMethodResponse>(
@@ -164,7 +139,7 @@ export class CmsapiService {
               });
               }
             defaultaccessmethod.unshift({guid: '', name: '', uri:''})
-            this.defaccesssubject.next(defaultaccessmethod)
+            this.accessmethods_subject.next(defaultaccessmethod)
         }),
         shareReplay()
         )

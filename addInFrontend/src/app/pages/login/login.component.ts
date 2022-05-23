@@ -15,6 +15,7 @@ import { OutlookService } from 'src/app/services/outlook.service';
 export class LoginComponent implements OnInit {
   isLoading = false;
   username$!: Observable<string>;
+  tokenisexpired$!: Observable<Boolean>;
   
 
   constructor(private router: Router, 
@@ -27,9 +28,15 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.outlookService.get_outlook_username()  
     this.username$ = this.outlookService.loginusername$
+    this.tokenisexpired$ = this.authService.tokenisexpired$
+  }
+
+  reset(){
+    this.authService.logout()
   }
  
   onLogin(form: NgForm): void {
+    this.isLoading = true;
     this.errmessageService.showError('');
     if (!form.valid) {
       this.errmessageService.showError('Form is not valid');
@@ -38,28 +45,25 @@ export class LoginComponent implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
     const webbridge = this.route.snapshot.paramMap.get('webbridge')!;
-
-    let authObs: Observable<AuthResponseData>;
-
-    this.isLoading = true;
     form.controls['email'].disable();
     form.controls['password'].disable();
 
-    authObs = this.authService.login(email, password, webbridge);
+    this.authService.login(email, password, webbridge).subscribe(
+      {
+        next: () => {
+          this.isLoading = false;
+          form.controls['email'].enable();
+          form.controls['password'].enable();
+          this.router.navigate(['/preferences']);
+        },
+        error: () => {
+          this.isLoading = false;
+          form.controls['email'].enable();
+          form.controls['password'].enable();
+        }    
+      }
+    );
 
-    authObs.subscribe({
-      next: () => {
-        this.isLoading = false;
-        form.controls['email'].enable();
-        form.controls['password'].enable();
-        this.router.navigate(['/preferences']);
-      },
-      error: () => {
-        this.isLoading = false;
-        form.controls['email'].enable();
-        form.controls['password'].enable();
-      }    
-    });
   }
 
 }

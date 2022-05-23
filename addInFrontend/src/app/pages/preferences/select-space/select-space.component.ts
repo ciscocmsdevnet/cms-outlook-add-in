@@ -33,8 +33,8 @@ export class SelectSpaceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.defspaces$ = this.cmsapiServce.defspaces$;
-    this.defaccess$ = this.cmsapiServce.defaccess$;
+    this.defspaces$ = this.cmsapiServce.spaces$;
+    this.defaccess$ = this.cmsapiServce.accessmethods$;
     this.invitation$ = this.cmsapiServce.invitation$;
     this.cmsapiServce.getUserSpaces().subscribe();
     this.getStoredInformation()

@@ -2,7 +2,7 @@
     <img title="welcome" src="../../assets/illustration.svg" />
 </header>
 <div class="dbl-margin">
-    <div class="text-center" *ngIf="showSpin">
+    <div class="text-center" *ngIf="(user$ |async)!.token">
         <h3>Token is found. Verifying... </h3>
         <div class="loader loader--small flex flex-center">
             <div class="wrapper">
@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="dbl-margin-top">
-        <h5 class="text-center text-bold">{{welcomeMessage}}</h5>
+        <h5 class="text-center text-bold">Welcome</h5>
         <div class="flex flex-center section">
             <p>Cisco Meeting Server Outlook Scheduler helps you schedule CMS Meetings easily</p> 
         </div>
@@ -33,7 +33,7 @@
     <div class="col-1"></div>
     <div class="col-10">
       <div class="dbl-margin-top">
-        <button class="btn btn--justified" [innerText]="'Get started'" [disabled]="!buttonIsenabled" title="get started" routerLink="/selectsite"></button>        
+        <button class="btn btn--justified" [innerText]="'Get started'" [disabled]="(user$ |async)!.token" title="get started" routerLink="/selectsite"></button>        
       </div>
     </div>
     <div class="col-1"></div>
