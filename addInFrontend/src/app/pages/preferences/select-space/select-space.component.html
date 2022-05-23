@@ -2,19 +2,19 @@
     <div class="form-group dropdown">
       <div class="form-group__text select">
         <label for="defspace">Select Space</label>
-        <select  class="form-group__text select" *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" name="defspace" id="defspace" (change)="changeDefSpace()">
-          <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
+        <select  class="form-group__text select" *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedSpaceGUID" name="defspace" id="defspace" (change)="changeDefSpace()">
+          <option *ngFor="let dspace of (defspaces$ | async)" [ngValue]="dspace.guid">
             {{ dspace.name }}
           </option>
         </select>
       </div>
     </div>
 
-    <ng-container *ngIf="selectedDefSpace.guid != ''" >
+    <ng-container *ngIf="selectedSpaceGUID != ''" >
       <div class="form-group dropdown" *ngIf="((defaccess$ | async)!.length > 0); else loading">
         <div class="form-group__text select">
           <label for="defaccess">Select Access Method</label>
-          <select [(ngModel)]="selectedDefAccess.guid" name="defaccess" id="defaccess" (change)="changeDefAccess()">
+          <select [(ngModel)]="selectedAccessGUID" name="defaccess" id="defaccess" (change)="changeDefAccess()">
             <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
               {{ daccess.uri }}
             </option>
@@ -27,7 +27,7 @@
       <div class="col-1"></div>
       <div class="col-10">
         <div class="dbl-margin-top">
-          <button class="btn btn--secondary btn--justified" title="submit" type="submit" [innerText]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"> </button>
+          <button class="btn btn--secondary btn--justified" title="submit" type="submit" [innerText]="'Save My Preference'" [disabled]="!(selectedSpaceGUID != '' && selectedAccessGUID != '')"> </button>
         </div>
       </div>
       <div class="col-1"></div>

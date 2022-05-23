@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AccessMethod, InvitationResponse, Preferences, Space } from 'src/app/models/prefernces.model';
-import { User } from 'src/app/models/user.model';
+import {  InvitationResponse } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
 import { OutlookService } from 'src/app/services/outlook.service';

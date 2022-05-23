@@ -12,21 +12,17 @@ import { ErrmessagesService } from 'src/app/services/errmessages.service';
 })
 export class SelectSpaceComponent implements OnInit {
   public tabIndex = 0;
-  public selectedDefSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedNewSpace: Space = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedDefAccess: AccessMethod = { 'name': '', 'guid': '', 'uri': '' };
-  public selectedNewAccess: AccessMethod = { 'name': '', 'guid': '', 'uri': '' };
-  userPreferences: Preferences = { 'defaultspace': this.selectedDefSpace, 'defaultaccessmethod': this.selectedDefAccess };
+  public selectedSpaceGUID: string = '';
+  public selectedAccessGUID: string = '';
+  userPreferences: Preferences = { 'defaultspaceGUID': this.selectedSpaceGUID, 'defaultaccessmethodGUID': this.selectedAccessGUID };
   
   @Input()
   cmsapiServce!: CmsapiService;
   @Input()
   errmessageService!: ErrmessagesService
-  error: any;
+
   defspaces$: Observable<Space[]> | undefined;
-  newspaces$: Observable<Space[]> | undefined;
   defaccess$: Observable<AccessMethod[]> | undefined;
-  newaccess$: Observable<AccessMethod[]> | undefined;
   userprefs$: Observable<Preferences | null> | undefined;
   invitation$: Observable<InvitationResponse | null> | undefined;
   constructor(
@@ -44,27 +40,23 @@ export class SelectSpaceComponent implements OnInit {
     if (!form.valid) {
       return;
     }
-    this.userPreferences.defaultspace = this.selectedDefSpace
-    this.userPreferences.defaultaccessmethod = this.selectedDefAccess
-    if (this.selectedNewSpace.guid == '') {
-      this.cmsapiServce.savepreferences(this.userPreferences, this.selectedDefSpace, this.selectedDefAccess)
-    } else {
-      this.cmsapiServce.savepreferences(this.userPreferences, this.selectedNewSpace, this.selectedNewAccess)
-    }
+    this.userPreferences.defaultspaceGUID = this.selectedSpaceGUID
+    this.userPreferences.defaultaccessmethodGUID = this.selectedAccessGUID
+    this.cmsapiServce.savepreferences(this.userPreferences)
     this.errmessageService.showMesssage('Preferences saved!');
   }
 
   changeDefSpace() {
-    this.selectedDefAccess.guid = '';
+    this.selectedAccessGUID = '';
     this.cmsapiServce.clearInvitationSubj()
-    if (this.selectedDefSpace.guid != '') {
-      this.cmsapiServce.getSpaceAccessMethods(this.selectedDefSpace).subscribe()
+    if (this.selectedSpaceGUID != '') {
+      this.cmsapiServce.getSpaceAccessMethods(this.selectedSpaceGUID).subscribe()
     }
   }
 
   changeDefAccess() {
-    if (this.selectedDefSpace.guid != '' && this.selectedDefAccess.guid != '') {
-      this.cmsapiServce.getMeetingInformation(this.userPreferences.defaultspace, this.userPreferences.defaultaccessmethod).subscribe()
+    if (this.selectedSpaceGUID != '' && this.selectedAccessGUID != '') {
+      this.cmsapiServce.getMeetingInformation(this.selectedSpaceGUID, this.selectedAccessGUID).subscribe()
     } else {
       this.cmsapiServce.clearInvitationSubj()
     }
@@ -77,10 +69,16 @@ export class SelectSpaceComponent implements OnInit {
         next: (userpref) => {
           if (userpref) {
             this.userPreferences = userpref;
-            this.selectedDefSpace = userpref.defaultspace;
-            this.selectedDefAccess = userpref.defaultaccessmethod;
-            if (this.selectedDefAccess.guid != '') {
-              this.cmsapiServce.getSpaceAccessMethods(this.selectedDefSpace).subscribe()
+            this.selectedSpaceGUID = userpref.defaultspaceGUID;
+            
+            if (userpref.defaultaccessmethodGUID != '') {
+              this.cmsapiServce.getSpaceAccessMethods(this.selectedSpaceGUID).subscribe(
+                {
+                  next: ()=>{
+                    this.selectedAccessGUID = userpref.defaultaccessmethodGUID;
+                  }
+                }
+              )
             }
           } 
         }

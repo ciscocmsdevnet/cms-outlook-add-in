@@ -107,14 +107,14 @@ export class CmsapiService {
         )
   }
 
-  getSpaceAccessMethods(selectedSpace: Space) {
+  getSpaceAccessMethods(selectedSpaceGuid: string) {
     this.accessmethods_subject.next([])
     this.errmessagesService.showMesssage('');
     return this.http
     .post<AccessMethodResponse>(
       this.authService.BACKENDURL+'/getSpaceAccessMethods/',
       {
-        spaceGUID: selectedSpace.guid,
+        spaceGUID: selectedSpaceGuid,
         authToken: this.user?.token,
         webBridgeURL: this.user?.webbridge
       },
@@ -146,17 +146,17 @@ export class CmsapiService {
 
   }
 
-  getMeetingInformation(selectedSpace: Space, selectedAccess: AccessMethod) {
+  getMeetingInformation(selectedSpaceGUID: string, selectedAccessGUID: string) {
     this.invitationsubject.next(null)
     this.errmessagesService.showMesssage('');
     return this.http
     .post<InvitationResponse>(
       this.authService.BACKENDURL+'/getMeetingInformation/',
       {
-        spaceGUID: selectedSpace.guid,
+        spaceGUID: selectedSpaceGUID,
         authToken: this.user?.token,
         webBridgeURL: this.user?.webbridge,
-        accessMethodGUID: selectedAccess.guid
+        accessMethodGUID: selectedAccessGUID
       },
     )
     .pipe(
@@ -292,12 +292,10 @@ export class CmsapiService {
   }
 
 
-  savepreferences(userPreferences: Preferences, selectedSpace: Space, selectedAccess: AccessMethod){
-    userPreferences.defaultspace = selectedSpace
-    userPreferences.defaultaccessmethod = selectedAccess
+  savepreferences(userPreferences: Preferences){
     localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
     localStorage.setItem('invitation', JSON.stringify(this.invitationsubject.getValue()));
-    this.saveDefaultSpaceAndMethodOnBackend(selectedSpace.guid, selectedAccess.guid).subscribe()
+    this.saveDefaultSpaceAndMethodOnBackend(userPreferences.defaultspaceGUID, userPreferences.defaultaccessmethodGUID).subscribe()
   }
 
 
