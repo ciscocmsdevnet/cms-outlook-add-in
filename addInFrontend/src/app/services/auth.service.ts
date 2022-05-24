@@ -131,9 +131,9 @@ export class AuthService {
     localStorage.removeItem('userData');
     localStorage.removeItem('userPreferences');
     localStorage.removeItem('invitation');
-
+    this.errmessagesService.showError("");
+    this.errmessagesService.showMesssage("");
     //TODO add delete session from CMS?
-
   }
 
 

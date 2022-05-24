@@ -21,14 +21,8 @@
     </div>
 
   </form>
-  <div class="row" *ngIf="(tokenisexpired$ | async)">
-    <div class="col-1"></div>
-    <div class="col-10">
-      <div class="dbl-margin-top">
-        <button class="btn btn--justified" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"></button>
-      </div>
-    </div>
-    <div class="col-1"></div>
+  <div class="row section flex flex-center" *ngIf="(tokenisexpired$ | async)">
+      <button class="row btn btn btn--link" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"> </button>
   </div>
 </div>
 
