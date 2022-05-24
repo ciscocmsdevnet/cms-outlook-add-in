@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
-import { AccessMethod, AccessMethodResponse, InvitationResponse, Preferences, Space } from '../models/prefernces.model';
+import { AccessMethod, AccessMethodResponse, InvitationResponse, Preferences, Space, SpaceTemplate } from '../models/prefernces.model';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 import { ErrmessagesService } from './errmessages.service';
@@ -12,21 +12,17 @@ export class CmsapiService {
 
   user: User | undefined;
 
-  private errorsubject = new BehaviorSubject<string>('');
-  error$: Observable<String> = this.errorsubject.asObservable();
-
-  private defspacesubject = new BehaviorSubject<Space[]>([]);
-  defspaces$: Observable<Space[]> = this.defspacesubject.asObservable();
-
-  private defaccesssubject = new BehaviorSubject<AccessMethod[]>([]);
-  defaccess$: Observable<AccessMethod[]> = this.defaccesssubject.asObservable();
-
+  private spaces_subject = new BehaviorSubject<Space[]>([]);
+  private accessmethods_subject = new BehaviorSubject<AccessMethod[]>([]);
   private userprefsubject = new BehaviorSubject<Preferences|null>(null);
-  userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
-
   private invitationsubject = new BehaviorSubject<InvitationResponse|null>(null);
+
+  spaces$: Observable<Space[]> = this.spaces_subject.asObservable();
+  accessmethods$: Observable<AccessMethod[]> = this.accessmethods_subject.asObservable();
+  userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
   invitation$: Observable<InvitationResponse|null> = this.invitationsubject.asObservable();
 
+  private prev_invitation: InvitationResponse|null = null;
 
   constructor( private http: HttpClient, 
                private authService: AuthService,
@@ -34,8 +30,7 @@ export class CmsapiService {
     
     this.authService.user$.subscribe( (user) => { this.user = user})
     this.getCurrentUserPref()
-    this.getCurrentInvitation()
-
+    this.getCurrentInvitation()    
   }
 
   private getCurrentUserPref(){
@@ -72,28 +67,7 @@ export class CmsapiService {
   }
 
   
-  validate() {
-    return this.http
-    .post(
-      this.authService.BACKENDURL+'/validate',
-      {
-        webBridgeURL: this.user!.webbridge,
-        authToken: this.user!.token,
-        username: this.user!.email,
-      },
-    )
-    .pipe(
-      catchError(
-        err => {
-          console.log(err.error.detail);
-          this.errmessagesService.showError("Token has been expired. Please login again.");
-          return throwError(() => {});
-        }
-      ),
-      shareReplay()
-      )
-  }
-
+  
   getUserSpaces() {
     this.errmessagesService.showMesssage('');
     return this.http
@@ -117,30 +91,30 @@ export class CmsapiService {
         }),
         tap(
           (resData: any[]) => {
-            let defaultspaces: Space[] = [];
+            let userspaces: Space[] = [];
             if (resData.length > 0) {
               resData.forEach((space: Space) => {
-                defaultspaces.push({guid: space.guid, name: space.name, uri: space.uri})
+                userspaces.push({guid: space.guid, name: space.name, uri: space.uri})
               });
             } else {
-              defaultspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
+              userspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
             }
-            defaultspaces.unshift({guid: '', name: '', uri:''})
-            this.defspacesubject.next(defaultspaces)
+            userspaces.unshift({guid: '', name: '', uri:''})
+            this.spaces_subject.next(userspaces)
           },
         ),
         shareReplay()
         )
   }
 
-  getSpaceAccessMethods(selectedSpace: Space) {
-    this.defaccesssubject.next([])
+  getSpaceAccessMethods(selectedSpaceGuid: string) {
+    this.accessmethods_subject.next([])
     this.errmessagesService.showMesssage('');
     return this.http
     .post<AccessMethodResponse>(
       this.authService.BACKENDURL+'/getSpaceAccessMethods/',
       {
-        spaceGUID: selectedSpace.guid,
+        spaceGUID: selectedSpaceGuid,
         authToken: this.user?.token,
         webBridgeURL: this.user?.webbridge
       },
@@ -148,8 +122,12 @@ export class CmsapiService {
     .pipe(
       catchError(
         err => {
-          this.errmessagesService.showError(err.error.detail);
-          console.log(err.error.detail);
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
           return throwError(() => {});
         }
       ),
@@ -161,31 +139,35 @@ export class CmsapiService {
               });
               }
             defaultaccessmethod.unshift({guid: '', name: '', uri:''})
-            this.defaccesssubject.next(defaultaccessmethod)
+            this.accessmethods_subject.next(defaultaccessmethod)
         }),
         shareReplay()
         )
 
   }
 
-  getMeetingInformation(selectedSpace: Space, selectedAccess: AccessMethod) {
+  getMeetingInformation(selectedSpaceGUID: string, selectedAccessGUID: string) {
     this.invitationsubject.next(null)
     this.errmessagesService.showMesssage('');
     return this.http
     .post<InvitationResponse>(
       this.authService.BACKENDURL+'/getMeetingInformation/',
       {
-        spaceGUID: selectedSpace.guid,
+        spaceGUID: selectedSpaceGUID,
         authToken: this.user?.token,
         webBridgeURL: this.user?.webbridge,
-        accessMethodGUID: selectedAccess.guid
+        accessMethodGUID: selectedAccessGUID
       },
     )
     .pipe(
       catchError(
         err => {
-          this.errmessagesService.showError(err.error.detail);
-          console.log(err.error.detail);
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
           return throwError(() => {});
         }
       ),
@@ -197,12 +179,123 @@ export class CmsapiService {
         )
   }
 
+  updateInvitation(index: number) {
+    if (index==1) {
+      if (this.invitationsubject.value) {
+        this.prev_invitation = this.invitationsubject.value
+        this.invitationsubject.next(null)
+      }
+    }else{
+      if (this.prev_invitation) {
+        this.invitationsubject.next(this.prev_invitation)
+      } else {
+        let inv = localStorage.getItem('invitation')
+        if (inv) {
+          this.invitationsubject.next(JSON.parse(inv))
+        }
+      }
+    }
+  }
 
-  savepreferences(userPreferences: Preferences, selectedSpace: Space, selectedAccess: AccessMethod){
-    userPreferences.defaultspace = selectedSpace
-    userPreferences.defaultaccessmethod = selectedAccess
+  clearInvitationSubj(){
+    this.prev_invitation = null
+    this.invitationsubject.next(null)
+  }
+
+
+  getPredefinedSites() {
+    return this.http
+    .get<string[]>(
+      this.authService.BACKENDURL+'/webbriddges/'
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      tap(
+        (m) => {
+          return m.push('Enter your own site')
+        }
+      ),
+      shareReplay()
+    )
+  }
+
+  getUserSpaceTemplates() {
+    return this.http
+    .post<SpaceTemplate[]>(
+      this.authService.BACKENDURL+'/userSpaceTemplates/',
+      {
+        authToken: this.user?.token,
+        webBridgeURL: this.user?.webbridge
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      // tap(
+      //   (m) => {
+      //     return m.push('Enter your own site')
+      //   }
+      // ),
+      shareReplay()
+    )
+  }
+
+  private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
+    return this.http
+    .post<any>(
+      this.authService.BACKENDURL+'/defaultSpace/',
+      {
+        spaceGUID: selectedSpaceGuid,
+        authToken: this.user?.token,
+        webBridgeURL: this.user?.webbridge,
+        accessMethodGUID: selectedAccessGiud
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      shareReplay()
+    )
+  }
+
+  createSpaceFromTemplate(space_name: string, template_id: string) {
+    console.log("created SpaceFromTemplate", space_name, template_id)
+    return of("created SpaceFromTemplate")
+  }
+
+
+  savepreferences(userPreferences: Preferences){
     localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
     localStorage.setItem('invitation', JSON.stringify(this.invitationsubject.getValue()));
+    this.saveDefaultSpaceAndMethodOnBackend(userPreferences.defaultspaceGUID, userPreferences.defaultaccessmethodGUID).subscribe()
   }
 
 

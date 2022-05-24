@@ -1,7 +1,7 @@
 
 export interface Preferences {
-     defaultspace: Space,
-     defaultaccessmethod: AccessMethod,
+     defaultspaceGUID: string,
+     defaultaccessmethodGUID: string,
 }
 
 export interface Space {
@@ -10,7 +10,7 @@ export interface Space {
      uri: string
 }
 
-export interface Template {
+export interface SpaceTemplate {
      id: string,
      name: string
 }

@@ -5,12 +5,17 @@ import { PreferencesComponent } from './pages/preferences/preferences.component'
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { AuthGuard } from './pages/login/auth.guard';
 import { CommandsComponent } from './pages/commands/commands.component';
+import { SelectsiteComponent } from './pages/selectsite/selectsite.component';
 
 
 const routes: Routes = [
   {
     path: "",
     component: WelcomeComponent,
+  },
+  { 
+    path: 'selectsite', 
+    component: SelectsiteComponent,
   },
   { 
     path: 'login', 

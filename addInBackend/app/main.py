@@ -25,6 +25,10 @@ class getMeetingEmailInvitationInput(getSpaceAccessMethodInput):
 
 class userInfoPayload(getSpacesInput):
     username: str
+    
+class defaultSpace(BaseModel):
+  spaceGUID: str
+  accessMethodGUID: str
 
 app = FastAPI()
 
@@ -35,6 +39,7 @@ origins = [
     "https://localhost",
     "https://127.0.0.1",
     "https://localhost:4200",
+    "https://raiatea.cisco.com:4200",
     "https://<Hostname>",
     "https://<Hostname>:9443",
     "https://<Hostname>:4200",
@@ -178,3 +183,25 @@ async def getUserInfo(userData: userInfoPayload):
         return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
       elif response.status_code == 200:
         return response.json()
+      
+####### MOCK API #######
+@app.get("/webbriddges/")
+async def webbriddges():
+  return ["site1.abc.com", "site2.abc.com","site3.abc.com","site4.abc.com","site5.abc.com"]
+      
+@app.post("/defaultSpace/")
+async def defaultSpace(default: getMeetingEmailInvitationInput):
+  print(default.spaceGUID, default.accessMethodGUID)
+  return 'OK'
+
+@app.post("/userSpaceTemplates/")
+async def userSpaceTemplates(getSpacesInput: getSpacesInput):
+  print(getSpacesInput.authToken)
+  return [{"id":"102", "name":"spaceTemplate1"},{"id":"103", "name":"spaceTemplate2"}]
+class user(BaseModel):
+    username: str
+    
+@app.post("/getInstantMeeting/")
+async def getInstantMeeting(user: user):
+  print(user.username)
+  return {"invitation":f"HELLO {user.username}"}

@@ -9,14 +9,11 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="CMS Meeting Scheduler"/>
   <Description DefaultValue="Allow users to schedule CMS meetings"/>
-  <IconUrl DefaultValue="https://localhost:4200/assets/icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:4200/assets/icon-64.png"/>
+  <IconUrl DefaultValue="https://raiatea.cisco.com:4200/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://raiatea.cisco.com:4200/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://gobeta.webex.com"/>
   <AppDomains>
     <AppDomain>https://raiatea.cisco.com</AppDomain>
-    <AppDomain>https://localhost</AppDomain>
-    <AppDomain>https://10.48.80.250</AppDomain>
-    <AppDomain>https://10.104.207.98</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
@@ -29,7 +26,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:4200"/>
+        <SourceLocation DefaultValue="https://raiatea.cisco.com:4200"/>
         <RequestedHeight>450</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -69,7 +66,7 @@
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-                <!-- <Control xsi:type="Button" id="ActionButton">
+                <Control xsi:type="Button" id="ActionButton">
                   <Label resid="ActionButton.Label"/>
                   <Supertip>
                     <Title resid="ActionButton.Label"/>
@@ -83,7 +80,7 @@
                   <Action xsi:type="ExecuteFunction">
                     <FunctionName>action</FunctionName>
                   </Action>
-                </Control> -->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -92,22 +89,22 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:4200/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:4200/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:4200/assets/icon-64.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://raiatea.cisco.com:4200/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://raiatea.cisco.com:4200/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://raiatea.cisco.com:4200/assets/icon-64.png"/>
       </bt:Images>
       <bt:Urls>
-        <!-- <bt:Url id="Commands.Url" DefaultValue="https://localhost:4200/commands"/> -->
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:4200"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://raiatea.cisco.com:4200/#/commands"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://raiatea.cisco.com:4200"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Cisco Meeting Server"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Meeting Preferences"/>
-        <!-- <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/> -->
+        <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Set Preferences for CMS Meetings."/>
-        <!-- <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/> -->
+        <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
