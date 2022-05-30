@@ -4,12 +4,49 @@
  */
 
 /* global global, Office, self, window */
+BACKENDURL = 'https://raiatea.cisco.com:9443'
 
 Office.onReady(() => {
   // If needed, Office.js is ready to be called
 });
 
-function parselink() {
+
+function isInvitation() {
+  let meetingInvitation = localStorage.getItem('invitation')
+  if (meetingInvitation) {
+    return JSON.parse(meetingInvitation)['invitation']
+  } 
+  return meetingInvitation
+}
+
+function saveIntitation(meetingInvitation) {
+  localStorage.setItem('invitation', JSON.stringify(meetingInvitation));
+}
+
+function pickusername() {
+  if (Office.context.mailbox) {
+    if (Office.context.mailbox.userProfile) {
+      return Office.context.mailbox.userProfile.emailAddress;
+    }
+  }
+  return ''
+}
+
+async function getInstantMeeting(username) {
+  // CHANGE API LINK
+  
+  let resp = await fetch(BACKENDURL+'/getInstantMeeting/', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json, text/plain, */*',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({username: username})
+  });
+  return await resp.json()
+}
+
+function parselink(invitation) {
 
   /*Meeting invite body
   Meeting ID: 649206560 
@@ -22,15 +59,16 @@ Dial sip:rd@alphauk.cisco.com
 */
 
   // meetingBody = "Meeting ID: " + meetingID + "<br><br>Join from a computer, mobile phone or tablet<br>Pre-Alpha: " + meetingLink + "<br><br>Join from a video conferencing system or application<br>Dial " + meetingSIPURL
+  removedSubject = invitation.replace(/Subject:/g, "");
+  meetingBody = removedSubject.replace(/"/g, "");
 
-  meetingInvitation = localStorage.getItem('invitation')
-  var removedSubject = meetingInvitation.replace(/Subject:/g, "<br>");
-  let meetingBody = removedSubject.replace(/\\n/g, "<br>");
+  // var removedSubject = meetingInvitation.replace(/Subject:/g, "<br>");
+  // let meetingBody = removedSubject.replace(/\\n/g, "<br>");
 
   Office.context.mailbox.item.body.setAsync(
     meetingBody,
     {
-      coercionType: 'html', // Write text as HTML
+      coercionType: 'text', // Write text as HTML
     },
 
     // Callback method to check that setAsync succeeded
@@ -57,14 +95,13 @@ Dial sip:rd@alphauk.cisco.com
 // }
 
 // Set the location of the item that the user is composing.
-function setLocation() {
+function setLocation(invitation) {
 
   const regex = /(https[a-zA-Z0-9:/\.\?=]+)/gm;
-  const str = localStorage.getItem('invitation');
   let m;
   var meetingLink;
 
-  while ((m = regex.exec(str)) !== null) {
+  while ((m = regex.exec(invitation)) !== null) {
     // This is necessary to avoid infinite loops with zero-width matches
     if (m.index === regex.lastIndex) {
       regex.lastIndex++;
@@ -78,11 +115,6 @@ function setLocation() {
       if (asyncResult.status == Office.AsyncResultStatus.Failed) {
         write(asyncResult.error.message);
       }
-      else {
-        // Successfully set the location.
-        // Do whatever is appropriate for your scenario,
-        continue
-      }
     });
 }
 
@@ -90,24 +122,33 @@ function setLocation() {
  * Shows a notification when the add-in command is executed.
  * @param event {Office.AddinCommands.Event}
  */
-function action(event) {
-  const message = {
+async function action(event) {
+  console.log("ACTION")
+  var message = {
     type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
     message: "Space created and Meeting Information added.",
     icon: "Icon.80x80",
     persistent: true,
   };
-
+  
   // Show a notification message
   Office.context.mailbox.item.notificationMessages.replaceAsync("action", message);
 
   // CMS Space will be created once Subject is added to event
 
   //Query backend to get the meeting information
-  parselink() // fill the message body
-  setLocation() // fill the location URL
-
-
+  let meetingInvitation = isInvitation()
+  if (meetingInvitation) {
+    parselink(meetingInvitation); // fill the message body
+    setLocation(meetingInvitation); // fill the location URL
+  } else {
+    let username = pickusername();
+    let meetingInvitation = await getInstantMeeting(username);
+    parselink(meetingInvitation["invitation"]); 
+    setLocation(meetingInvitation["invitation"]);
+    saveIntitation(meetingInvitation); 
+  }
+  
   // Be sure to indicate when the add-in command function is complete
   event.completed();
 }

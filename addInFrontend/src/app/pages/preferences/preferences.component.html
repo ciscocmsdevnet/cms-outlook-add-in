@@ -1,43 +1,28 @@
-<ng-template #loading>
-  <app-loading-spinner class="form-control"></app-loading-spinner>
-</ng-template>
 
+<div class="base-margin">
+    <app-user-header></app-user-header>
+    <cui-tabs [(activeTabIndex)]="tabIndex" (activeTabIndexChange)="onTabChange()" >
+      <cui-tab label="Select Meeting Space">
+        <app-select-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-select-space>
+      </cui-tab>
+      <cui-tab label="Create New Space">
+        <app-new-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-new-space>
+      </cui-tab>
+    </cui-tabs>
 
-<div class="center ms-welcome__main">
-  <div class="user-label ms-font-m"><span class="usercircle">{{((currentUser$ | async)?.email)!.substring(0, 2)}}</span>{{(currentUser$ | async)?.email}}</div>
-
-  <form #saveForm="ngForm" (ngSubmit)="savePreferences(saveForm)">
-    <h4>Select Meeting Space</h4>
-    <div class="form-group">
-      <label class="ms-font-m" for="defspace">Select Space</label>
-      <select *ngIf="(defspaces$ | async)!.length > 0; else loading" [(ngModel)]="selectedDefSpace.guid" class="form-control" name="defspace" (change)="changeDefSpace()">
-        <option *ngFor="let dspace of defspaces$ | async" [ngValue]="dspace.guid">
-          {{ dspace.name }}
-        </option>
-      </select>
-    </div>
-
-    <ng-container *ngIf="selectedDefSpace.guid != ''">
-      <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
-        <label class="ms-font-m" for="defaccess">Select Access Method</label>
-        <select [(ngModel)]="selectedDefAccess.guid" class="form-control" name="defaccess" (change)="changeDefAccess()">
-          <option *ngFor="let daccess of (defaccess$|async)" [ngValue]="daccess.guid">
-            {{ daccess.uri }}
-          </option>
-        </select>
+  <div class="row base-margin-bottom">
+    <div class="col-1"></div>
+    <div class="col-10">
+      <div class="base-margin-top dbl-margin-bottom">
+        <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'" (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
       </div>
-    </ng-container>
-    <br><br>
-    <app-button type="submit" [label]="'Save My Preference'" [disabled]="!(selectedDefSpace.guid != '' && selectedDefAccess.guid != '')"></app-button>
-  </form>
-  <br>
-  <app-button [label]="'Get meeting link'" (onClick)="getMeetinglink()" [disabled]="!(invitation$|async)" style="width: 100%;"></app-button>
-  <br>
-  <br>
-  <br>
-  <br>
-  <app-button [label]="'Logout'" (onClick)="logout()" style="width: 100%;"></app-button>
+    </div>
+    <div class="col-1"></div>
+  </div>
+
 </div>
+
+
 
 
 

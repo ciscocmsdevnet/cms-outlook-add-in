@@ -5,6 +5,7 @@ import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { ErrmessagesService } from './errmessages.service';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -16,18 +17,22 @@ export interface AuthResponseData {
 @Injectable()
 export class AuthService {
 
-  BACKENDURL = '<Hostname>'
+  BACKENDURL = environment.backendurl
   private nullUser: User = { email: '', token: '', webbridge: '' }
   private usersubject = new BehaviorSubject<User>(this.nullUser);
+  private tokenisexpired = new BehaviorSubject<Boolean>(false);
   user$: Observable<User> = this.usersubject.asObservable();
-
-  // private tokenExpirationTimer: any;
+  tokenisexpired$: Observable<Boolean> = this.tokenisexpired.asObservable();
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private errmessagesService: ErrmessagesService,
   ) {
+    this.page_navigator()
+  }
+
+  check_login() {
     const userData = localStorage.getItem('userData');
     if (userData) {
       let userparsed: User = this.nullUser
@@ -41,10 +46,49 @@ export class AuthService {
       } catch (e) {
         alert(e); // error in the above string (in this case, yes)!
       }
-
     }
   }
 
+  page_navigator() {
+    this.check_login()
+    const user = this.usersubject.getValue()
+    if (user.token) {
+      this.validate().subscribe(
+        {
+          error: ()=>{
+            this.router.navigate(["login", {'webbridge':user.webbridge}])
+            this.tokenisexpired.next(true)
+          },
+          complete: () => {
+            this.router.navigateByUrl("preferences")
+          }
+        }
+      )
+    }
+  }
+
+  validate() {
+    const userData = this.usersubject.getValue()
+    return this.http
+    .post(
+      this.BACKENDURL+'/validate',
+      {
+        webBridgeURL: userData.webbridge,
+        authToken: userData.token,
+        username: userData.email,
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          console.log(err.error.detail);
+          this.errmessagesService.showError("Token has been expired. Please login again.");
+          return throwError(() => {});
+        }
+      ),
+      shareReplay()
+      )
+  }
 
   login(email: string, password: string, webbridge: string) {
     return this.http
@@ -59,9 +103,13 @@ export class AuthService {
       .pipe(
         catchError(
           err => {
-            this.errmessagesService.showError(err.error.detail);
-            console.log(err.error.detail);
-            return throwError(() => { });
+            if (err.error.detail) {
+              this.errmessagesService.showError(err.error.detail);
+            } 
+            else if (err.message) {
+              this.errmessagesService.showError(err.message)
+            }          
+            return throwError(() => {});
           }
         ),
         tap(resData => {
@@ -76,17 +124,16 @@ export class AuthService {
   }
 
 
-
-
   logout() {
     this.usersubject.next(this.nullUser);
+    this.tokenisexpired.next(false);
     this.router.navigate(['/']);
     localStorage.removeItem('userData');
     localStorage.removeItem('userPreferences');
     localStorage.removeItem('invitation');
-
+    this.errmessagesService.showError("");
+    this.errmessagesService.showMesssage("");
     //TODO add delete session from CMS?
-
   }
 
 

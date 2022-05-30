@@ -1,0 +1,17 @@
+<div class="col flex flex-right">
+    <div class="row">
+      <div class="user-label">
+        <span class="usercircle">{{((currentUser$ | async)?.email)!.substring(0, 2)}}</span>
+      </div>
+      <div class="col">
+        <div class="row qtr-margin-left text-size-12 text-bold">
+          {{(currentUser$ | async)?.email}}
+        </div>
+        <div class="row qtr-margin-left text-size-12">
+          {{(currentUser$ | async)?.webbridge}}
+        </div>
+        <button class="row btn btn--small btn--link" title="sing out" [innerText]="'Sing Out'" (click)="logout()"> </button>
+      </div>
+    </div>   
+  </div>
+  <hr> 

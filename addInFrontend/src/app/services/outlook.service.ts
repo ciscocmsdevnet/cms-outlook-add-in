@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { InvitationResponse } from "../models/prefernces.model";
+import { BehaviorSubject, Observable } from "rxjs";
 import { CmsapiService } from "./cmsapi.service";
 import { ErrmessagesService } from "./errmessages.service";
 
@@ -8,7 +7,26 @@ import { ErrmessagesService } from "./errmessages.service";
 export class OutlookService {
 
   private invitation: string = '';
-  constructor(private cmsapiService: CmsapiService, private errmessageService: ErrmessagesService ) {
+  private loginusernamesub = new BehaviorSubject<string>('');
+  loginusername$: Observable<string> = this.loginusernamesub.asObservable();
+
+  constructor(
+    private cmsapiService: CmsapiService, 
+    private errmessageService: ErrmessagesService ) {
+
+  }
+
+  get_outlook_username() {
+    Office.onReady(() => {
+      if (Office.context.mailbox) {
+        if (Office.context.mailbox.userProfile) {
+          this.loginusernamesub.next(Office.context.mailbox.userProfile.emailAddress)
+        }
+      }
+    });
+  }
+
+  run_command() {
     this.cmsapiService.invitation$.subscribe(
       {
         next: (inv) => {
@@ -18,24 +36,13 @@ export class OutlookService {
         }
       }
     )
-  }
-
-  run_command() {
-
-    if (this.invitation == '') {
-      console.log(localStorage.getItem('invitation'));
-    } else {
-      console.log(this.invitation);
-    }
-    
 
     Office.onReady(() => {
+      this.parselink();
+      this.setLocation();
+      this.errmessageService.showMesssage("Space created and Meeting Information added.");   
     });
     
-    this.parselink();
-    this.setLocation();
-    this.errmessageService.showMesssage("Space created and Meeting Information added.");
-
   }
 
 
@@ -48,11 +55,12 @@ export class OutlookService {
     } else {
       meetingInvitation = this.invitation;
     }
+
+    console.log("INVITATION:", meetingInvitation)
    
     var removedSubject = meetingInvitation.replace(/Subject:/g, "");
     var meetingBody = removedSubject.replace(/"/g, "");
     // let meetingBody = removedQuotes.replace(/\\n/g, "<br></div>");
-    console.log(Office)
     Office.context.mailbox.item!.body.setSelectedDataAsync(
         meetingBody,
         {
