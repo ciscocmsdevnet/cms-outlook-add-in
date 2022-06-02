@@ -17,3 +17,7 @@ class getMeetingEmailInvitationInput(getSpaceAccessMethodInput):
 
 class userInfoPayload(getSpacesInput):
     username: str
+
+class createSpaceInputs(getSpacesInput):
+    spacename: str
+    templateid: str

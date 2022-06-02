@@ -138,3 +138,52 @@ async def getUserInfo(userData: userInfoPayload):
         return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
       elif response.status_code == 200:
         return response.json()
+
+
+@router.post("/createSpace")
+async def getUserInfo(userData: createSpaceInputs):
+
+    web_bridge_url = f"https://{userData.webBridgeURL}/api/cospaces"
+
+
+    headers = {'Authorization': f'Bearer {userData.authToken}'}
+
+    payload =  json.dumps({"coSpaceTemplateId": createSpaceInputs.templateid, "name":createSpaceInputs.spacename })
+
+    try:
+      response = requests.request("POST", web_bridge_url, headers=headers, data=payload, verify=False)
+
+    except ConnectionError:
+      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
+    except Exception as validationEx:
+      print (f"Exception occured while validating Auth token: {validationEx}")
+    else:
+      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      if response.status_code == 401:
+        raise HTTPException(status_code=401, detail="Invalid username/password provided")
+      elif response.status_code == 307:
+        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
+      elif response.status_code == 200:
+        return response.json()
+
+@router.post("/getSpaceTemplates")
+async def getUserInfo(userData: getSpacesInput):
+
+    web_bridge_url = f"https://{userData.webBridgeURL}/api/coSpaceTemplates"
+
+    headers = {'Authorization': f'Bearer {userData.authToken}'}
+    try:
+      response = requests.request("GET", web_bridge_url, headers=headers, verify=False)
+
+    except ConnectionError:
+      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
+    except Exception as validationEx:
+      print (f"Exception occured while validating Auth token: {validationEx}")
+    else:
+      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      if response.status_code == 401:
+        raise HTTPException(status_code=401, detail="Invalid username/password provided")
+      elif response.status_code == 307:
+        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
+      elif response.status_code == 200:
+        return response.json()
