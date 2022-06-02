@@ -18,7 +18,6 @@ export class PreferencesComponent implements OnInit {
   
   constructor(
     public cmsapiServce: CmsapiService,
-    public errmessageService: ErrmessagesService,
   ) { }
 
   ngOnInit(): void {

@@ -69,7 +69,6 @@ export class CmsapiService {
   
   
   getUserSpaces() {
-    this.errmessagesService.showMesssage('');
     return this.http
     .post(
       this.authService.BACKENDURL+'/getUserSpaces/',
@@ -109,7 +108,6 @@ export class CmsapiService {
 
   getSpaceAccessMethods(selectedSpaceGuid: string) {
     this.accessmethods_subject.next([])
-    this.errmessagesService.showMesssage('');
     return this.http
     .post<AccessMethodResponse>(
       this.authService.BACKENDURL+'/getSpaceAccessMethods/',
