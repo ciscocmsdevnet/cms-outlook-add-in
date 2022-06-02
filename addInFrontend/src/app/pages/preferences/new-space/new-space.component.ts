@@ -12,8 +12,6 @@ import { ErrmessagesService } from 'src/app/services/errmessages.service';
 export class NewSpaceComponent implements OnInit {
   @Input()
   cmsapiServce!: CmsapiService;
-  @Input()
-  errmessageService!: ErrmessagesService;
 
   @Output() 
   switchTabevent = new EventEmitter<number>();
@@ -24,6 +22,7 @@ export class NewSpaceComponent implements OnInit {
   public showCreateButton: boolean = false;
 
   constructor(
+    private errmessageService: ErrmessagesService
   ) { }
 
   ngOnInit(): void {
@@ -42,23 +41,13 @@ export class NewSpaceComponent implements OnInit {
     this.cmsapiServce.createSpaceFromTemplate(newspaceForm.controls['space_name'].value, newspaceForm.controls['space_temps'].value['id']).subscribe(
       {
         next: (newspace)=>{
-          console.log(newspace.name)
+          this.errmessageService.showMesssage("New space '"+newspace.name+"' has been created!")
           newspaceForm.controls['space_name'].setValue('')
           newspaceForm.controls['space_temps'].setValue('')
           this.showCreateButton = false
           this.switchTabevent.emit(0)
           this.setNewSpace.emit(newspace.guid)
-          // this.cmsapiServce.getUserSpaces().subscribe();
-          // this.cmsapiServce.getMeetingInformation(newspace.guid, '00000000-0000-0000-0000-000000000001').subscribe(
-          //   {
-          //     complete: () => {
-          //       newspaceForm.controls['space_name'].setValue('')
-          //       newspaceForm.controls['space_temps'].setValue('')
-          //     }
-          //   }
-          // )
-        },
-        
+        }
       }
       
     )

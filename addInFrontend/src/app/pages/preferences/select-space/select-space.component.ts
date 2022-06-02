@@ -20,17 +20,15 @@ export class SelectSpaceComponent implements OnInit {
   @Input()
   cmsapiServce!: CmsapiService;
   @Input()
-  errmessageService!: ErrmessagesService
-  @Input()
   createdSpaceId!: string
-
 
   defspaces$: Observable<Space[]> | undefined;
   defaccess$: Observable<AccessMethod[]> | undefined;
   userprefs$: Observable<Preferences | null> | undefined;
   invitation$: Observable<InvitationResponse | null> | undefined;
   constructor(
-    private outlookService: OutlookService
+    private outlookService: OutlookService,
+    private errmessageService: ErrmessagesService,
   ) { }
 
   ngOnInit(): void {

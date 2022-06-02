@@ -6,7 +6,6 @@
         <app-select-space 
         *ngIf="tabIndex==0" 
         [cmsapiServce]="cmsapiServce" 
-        [errmessageService]="errmessageService"
         [createdSpaceId]="newSpaceId"
         ></app-select-space>
       </cui-tab>
@@ -16,7 +15,6 @@
         (switchTabevent)="setTab($event)"  
         (setNewSpace)="setNewSpaceId($event)"
         [cmsapiServce]="cmsapiServce" 
-        [errmessageService]="errmessageService"
         ></app-new-space>
       </cui-tab>
     </cui-tabs>
