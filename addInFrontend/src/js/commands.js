@@ -4,7 +4,7 @@
  */
 
 /* global global, Office, self, window */
-BACKENDURL = 'https://raiatea.cisco.com:9443'
+BACKENDURL = 'https://raiatea.cisco.com:9443/addin/v1'
 
 Office.onReady(() => {
   // If needed, Office.js is ready to be called
@@ -35,13 +35,13 @@ function pickusername() {
 async function getInstantMeeting(username) {
   // CHANGE API LINK
   
-  let resp = await fetch(BACKENDURL+'/getInstantMeeting/', {
+  let resp = await fetch(BACKENDURL+'/instantMeeting/'+username, {
   method: 'POST',
   headers: {
     'Accept': 'application/json, text/plain, */*',
     'Content-Type': 'application/json'
   },
-  body: JSON.stringify({username: username})
+  body: {}
   });
   return await resp.json()
 }

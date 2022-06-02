@@ -29,7 +29,7 @@ try:
 
   allowedDomains =  [os.environ.get("ALLOWED_DOMAINS")]
   allowedDomains.append('localhost')
-  allowedDomains.append('127.0.01')
+  allowedDomains.append('127.0.0.1')
   for hostname in allowedDomains:
     origins.append(f"https://{hostname}")
     origins.append(f"https://{hostname}:9443")
