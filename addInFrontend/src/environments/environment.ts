@@ -1,11 +1,13 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+type MyWindow = Window & { 'env': { backendurl: string } }
+
 export const environment = {
   production: false,
-  backendurl:'https://raiatea.cisco.com:9443/addin/v1',
+  // backendurl: window.env["backendurl"] || "default",
+  backendurl: (window as unknown as MyWindow).env['backendurl']
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
