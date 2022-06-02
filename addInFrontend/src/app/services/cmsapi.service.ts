@@ -262,32 +262,32 @@ export class CmsapiService {
     )
   }
 
-  private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
-    return this.http
-    .post<any>(
-      this.authService.BACKENDURL+'/defaultSpace/',
-      {
-        spaceGUID: selectedSpaceGuid,
-        authToken: this.user?.token,
-        webBridgeURL: this.user?.webbridge,
-        accessMethodGUID: selectedAccessGiud
-      },
-    )
-    .pipe(
-      catchError(
-        err => {
-          if (err.error.detail) {
-            this.errmessagesService.showError(err.error.detail);
-          } 
-          else if (err.message) {
-            this.errmessagesService.showError(err.message)
-          }          
-          return throwError(() => {});
-        }
-      ),
-      shareReplay()
-    )
-  }
+  // private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
+  //   return this.http
+  //   .post<any>(
+  //     this.authService.BACKENDURL+'/defaultSpace/',
+  //     {
+  //       spaceGUID: selectedSpaceGuid,
+  //       authToken: this.user?.token,
+  //       webBridgeURL: this.user?.webbridge,
+  //       accessMethodGUID: selectedAccessGiud
+  //     },
+  //   )
+  //   .pipe(
+  //     catchError(
+  //       err => {
+  //         if (err.error.detail) {
+  //           this.errmessagesService.showError(err.error.detail);
+  //         } 
+  //         else if (err.message) {
+  //           this.errmessagesService.showError(err.message)
+  //         }          
+  //         return throwError(() => {});
+  //       }
+  //     ),
+  //     shareReplay()
+  //   )
+  // }
 
   createSpaceFromTemplate(space_name: string, template_id: string) {
     console.log("created SpaceFromTemplate", space_name, template_id)
@@ -298,7 +298,7 @@ export class CmsapiService {
   savepreferences(userPreferences: Preferences){
     localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
     localStorage.setItem('invitation', JSON.stringify(this.invitationsubject.getValue()));
-    this.saveDefaultSpaceAndMethodOnBackend(userPreferences.defaultspaceGUID, userPreferences.defaultaccessmethodGUID).subscribe()
+    // this.saveDefaultSpaceAndMethodOnBackend(userPreferences.defaultspaceGUID, userPreferences.defaultaccessmethodGUID).subscribe()
   }
 
 
