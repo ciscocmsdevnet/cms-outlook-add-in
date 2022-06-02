@@ -144,11 +144,8 @@ async def getUserInfo(userData: userInfoPayload):
 async def getUserInfo(userData: createSpaceInputs):
 
     web_bridge_url = f"https://{userData.webBridgeURL}/api/cospaces"
-
-
     headers = {'Authorization': f'Bearer {userData.authToken}'}
-
-    payload =  json.dumps({"coSpaceTemplateId": createSpaceInputs.templateid, "name":createSpaceInputs.spacename })
+    payload =  json.dumps({"coSpaceTemplateId": userData.templateid, "name":userData.spacename })
 
     try:
       response = requests.request("POST", web_bridge_url, headers=headers, data=payload, verify=False)

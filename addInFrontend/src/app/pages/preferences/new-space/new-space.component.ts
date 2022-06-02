@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SpaceTemplate } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
@@ -14,8 +14,14 @@ export class NewSpaceComponent implements OnInit {
   cmsapiServce!: CmsapiService;
   @Input()
   errmessageService!: ErrmessagesService;
+
+  @Output() 
+  switchTabevent = new EventEmitter<number>();
+  @Output() 
+  setNewSpace = new EventEmitter<string>();
   
   public spacetemps: SpaceTemplate[] = [];
+  public showCreateButton: boolean = false;
 
   constructor(
   ) { }
@@ -32,22 +38,29 @@ export class NewSpaceComponent implements OnInit {
   }
 
   onCreateSpace(newspaceForm: NgForm){
-    console.log(newspaceForm.controls['space_name'].value, newspaceForm.controls['space_temps'].value['id'])
+    this.showCreateButton = true
     this.cmsapiServce.createSpaceFromTemplate(newspaceForm.controls['space_name'].value, newspaceForm.controls['space_temps'].value['id']).subscribe(
       {
-        complete: ()=>{
-          // change to returned value from createSpaceFromTemplate
-          this.cmsapiServce.getUserSpaces().subscribe();
-          this.cmsapiServce.getMeetingInformation('fed04266-6afa-4cd1-9730-05d14e0e8532', '00000000-0000-0000-0000-000000000001').subscribe(
-            {
-              complete: () => {
-                newspaceForm.controls['space_name'].setValue('')
-                newspaceForm.controls['space_temps'].setValue('')
-              }
-            }
-          )
-        }
+        next: (newspace)=>{
+          console.log(newspace.name)
+          newspaceForm.controls['space_name'].setValue('')
+          newspaceForm.controls['space_temps'].setValue('')
+          this.showCreateButton = false
+          this.switchTabevent.emit(0)
+          this.setNewSpace.emit(newspace.guid)
+          // this.cmsapiServce.getUserSpaces().subscribe();
+          // this.cmsapiServce.getMeetingInformation(newspace.guid, '00000000-0000-0000-0000-000000000001').subscribe(
+          //   {
+          //     complete: () => {
+          //       newspaceForm.controls['space_name'].setValue('')
+          //       newspaceForm.controls['space_temps'].setValue('')
+          //     }
+          //   }
+          // )
+        },
+        
       }
+      
     )
     
   }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
-import { AccessMethod, AccessMethodResponse, InvitationResponse, Preferences, Space, SpaceTemplate } from '../models/prefernces.model';
+import { AccessMethod, AccessMethodResponse, InvitationResponse, NewSpaceResponse, Preferences, Space, SpaceTemplate } from '../models/prefernces.model';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 import { ErrmessagesService } from './errmessages.service';
@@ -94,12 +94,12 @@ export class CmsapiService {
             let userspaces: Space[] = [];
             if (resData.length > 0) {
               resData.forEach((space: Space) => {
-                userspaces.push({guid: space.guid, name: space.name, uri: space.uri})
+                userspaces.push({guid: space.guid, name: space.name})
               });
             } else {
-              userspaces.push({guid: '', name: 'No spaces on CMS', uri: ''})
+              userspaces.push({guid: '', name: 'No spaces on CMS'})
             }
-            userspaces.unshift({guid: '', name: '', uri:''})
+            userspaces.unshift({guid: '', name: ''})
             this.spaces_subject.next(userspaces)
           },
         ),
@@ -234,8 +234,8 @@ export class CmsapiService {
 
   getUserSpaceTemplates() {
     return this.http
-    .post<SpaceTemplate[]>(
-      this.authService.BACKENDURL+'/userSpaceTemplates/',
+    .post<any>(
+      this.authService.BACKENDURL+'/getSpaceTemplates',
       {
         authToken: this.user?.token,
         webBridgeURL: this.user?.webbridge
@@ -253,11 +253,15 @@ export class CmsapiService {
           return throwError(() => {});
         }
       ),
-      // tap(
-      //   (m) => {
-      //     return m.push('Enter your own site')
-      //   }
-      // ),
+      map(
+        (m) => {
+          const lm: SpaceTemplate[] = m['coSpaceTemplates']
+          // if (lm.length == 0) {
+          //   return [{"name":"No templates", "id": ""}]
+          // }
+          return lm
+        }
+      ),
       shareReplay()
     )
   }
@@ -290,8 +294,37 @@ export class CmsapiService {
   // }
 
   createSpaceFromTemplate(space_name: string, template_id: string) {
-    console.log("created SpaceFromTemplate", space_name, template_id)
-    return of("created SpaceFromTemplate")
+    // console.log("created SpaceFromTemplate", space_name, template_id)
+    // return of("created SpaceFromTemplate")
+    return this.http
+    .post<NewSpaceResponse>(
+      this.authService.BACKENDURL+'/createSpace',
+      {
+        authToken: this.user?.token,
+        webBridgeURL: this.user?.webbridge,
+        templateid: template_id,
+        spacename: space_name
+      },
+    )
+    .pipe(
+      catchError(
+        err => {
+          if (err.error.detail) {
+            this.errmessagesService.showError(err.error.detail);
+          } 
+          else if (err.message) {
+            this.errmessagesService.showError(err.message)
+          }          
+          return throwError(() => {});
+        }
+      ),
+      tap(
+         space => {
+
+         }
+      ),
+      shareReplay()
+    )
   }
 
 
