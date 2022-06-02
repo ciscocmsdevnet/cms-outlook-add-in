@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AccessMethod, InvitationResponse, Preferences, Space } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
+import { OutlookService } from 'src/app/services/outlook.service';
 
 @Component({
   selector: 'app-select-space',
@@ -20,20 +21,28 @@ export class SelectSpaceComponent implements OnInit {
   cmsapiServce!: CmsapiService;
   @Input()
   errmessageService!: ErrmessagesService
+  @Input()
+  createdSpaceId!: string
+
 
   defspaces$: Observable<Space[]> | undefined;
   defaccess$: Observable<AccessMethod[]> | undefined;
   userprefs$: Observable<Preferences | null> | undefined;
   invitation$: Observable<InvitationResponse | null> | undefined;
   constructor(
+    private outlookService: OutlookService
   ) { }
 
   ngOnInit(): void {
     this.defspaces$ = this.cmsapiServce.spaces$;
     this.defaccess$ = this.cmsapiServce.accessmethods$;
     this.invitation$ = this.cmsapiServce.invitation$;
-    this.cmsapiServce.getUserSpaces().subscribe();
     this.getStoredInformation()
+    this.cmsapiServce.getUserSpaces().subscribe();
+    if (this.createdSpaceId) {
+      this.selectedSpaceGUID = this.createdSpaceId
+      this.cmsapiServce.getSpaceAccessMethods(this.selectedSpaceGUID).subscribe()
+    } 
   }
 
   savePreferences(form: NgForm) {
@@ -60,6 +69,11 @@ export class SelectSpaceComponent implements OnInit {
     } else {
       this.cmsapiServce.clearInvitationSubj()
     }
+  }
+
+  getMeetinglink() {
+    this.errmessageService.showMesssage('');
+    this.outlookService.run_command()
   }
 
   getStoredInformation() {

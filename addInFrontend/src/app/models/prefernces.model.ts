@@ -6,8 +6,7 @@ export interface Preferences {
 
 export interface Space {
      guid: string,
-     name: string,
-     uri: string
+     name: string
 }
 
 export interface SpaceTemplate {
@@ -28,4 +27,10 @@ export interface AccessMethodResponse{
 export interface InvitationResponse{
      invitation: string  
      language: string
+}
+
+export interface NewSpaceResponse{
+     guid: string,
+     name: string,
+     accessMethods: AccessMethod[]
 }

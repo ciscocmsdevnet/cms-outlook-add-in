@@ -34,6 +34,16 @@
     </div>
 </form> 
 
+<div class="row base-margin-bottom">
+  <div class="col-1"></div>
+  <div class="col-10">
+    <div class="base-margin-top dbl-margin-bottom">
+      <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'" (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
+    </div>
+  </div>
+  <div class="col-1"></div>
+</div>
+
 
 <ng-template #loading>
     <div class="loading-dots base-margin">

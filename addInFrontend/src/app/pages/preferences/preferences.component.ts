@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import {  InvitationResponse } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
-import { OutlookService } from 'src/app/services/outlook.service';
 
 @Component({
   selector: 'app-preferences',
@@ -13,12 +12,12 @@ import { OutlookService } from 'src/app/services/outlook.service';
 export class PreferencesComponent implements OnInit {
   public tabIndex = 0;
   public isGetLinkButtonActive = false
+  public newSpaceId = ''
 
   invitation$: Observable<InvitationResponse | null> | undefined;
   
   constructor(
     public cmsapiServce: CmsapiService,
-    private outlookService: OutlookService,
     public errmessageService: ErrmessagesService,
   ) { }
 
@@ -26,13 +25,17 @@ export class PreferencesComponent implements OnInit {
     this.invitation$ = this.cmsapiServce.invitation$
   }
 
-  getMeetinglink() {
-    this.errmessageService.showMesssage('');
-    this.outlookService.run_command()
-  }
-  
   onTabChange(){
     this.cmsapiServce.updateInvitation(this.tabIndex)  
+    this.newSpaceId = ''
+  }
+
+  setTab(num: number){
+    this.tabIndex = num
+  }
+
+  setNewSpaceId(id: string){
+    this.newSpaceId = id
   }
 
 }

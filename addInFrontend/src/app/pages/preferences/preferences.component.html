@@ -3,23 +3,23 @@
     <app-user-header></app-user-header>
     <cui-tabs [(activeTabIndex)]="tabIndex" (activeTabIndexChange)="onTabChange()" >
       <cui-tab label="Select Meeting Space">
-        <app-select-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-select-space>
+        <app-select-space 
+        *ngIf="tabIndex==0" 
+        [cmsapiServce]="cmsapiServce" 
+        [errmessageService]="errmessageService"
+        [createdSpaceId]="newSpaceId"
+        ></app-select-space>
       </cui-tab>
       <cui-tab label="Create New Space">
-        <app-new-space *ngIf="tabIndex==1" [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-new-space>
+        <app-new-space 
+        *ngIf="tabIndex==1" 
+        (switchTabevent)="setTab($event)"  
+        (setNewSpace)="setNewSpaceId($event)"
+        [cmsapiServce]="cmsapiServce" 
+        [errmessageService]="errmessageService"
+        ></app-new-space>
       </cui-tab>
     </cui-tabs>
-
-  <div class="row base-margin-bottom">
-    <div class="col-1"></div>
-    <div class="col-10">
-      <div class="base-margin-top dbl-margin-bottom">
-        <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'" (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
-      </div>
-    </div>
-    <div class="col-1"></div>
-  </div>
-
 </div>
 
 
