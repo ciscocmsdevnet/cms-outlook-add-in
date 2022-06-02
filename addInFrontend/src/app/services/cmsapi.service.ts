@@ -203,10 +203,11 @@ export class CmsapiService {
   }
 
 
-  getPredefinedSites() {
+  getPredefinedSites(): Observable<string[]> {
     return this.http
-    .get<string[]>(
-      this.authService.BACKENDURL+'/webbriddges/'
+    .post<string>(
+      this.authService.BACKENDURL+'/getWebBridges/',
+      {}
     )
     .pipe(
       catchError(
@@ -220,9 +221,11 @@ export class CmsapiService {
           return throwError(() => {});
         }
       ),
-      tap(
+      map(
         (m) => {
-          return m.push('Enter your own site')
+          const lm: string[] = JSON.parse(m)['webbridges']
+          lm.push('Enter your own site')
+          return lm
         }
       ),
       shareReplay()

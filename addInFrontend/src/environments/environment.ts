@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 export const environment = {
   production: false,
-  backendurl:'https://raiatea.cisco.com:9443',
+  backendurl:'https://raiatea.cisco.com:9443/addin/v1',
 };
 
 /*

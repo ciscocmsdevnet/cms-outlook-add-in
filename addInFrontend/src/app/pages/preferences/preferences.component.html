@@ -6,7 +6,7 @@
         <app-select-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-select-space>
       </cui-tab>
       <cui-tab label="Create New Space">
-        <app-new-space [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-new-space>
+        <app-new-space *ngIf="tabIndex==1" [cmsapiServce]="cmsapiServce" [errmessageService]="errmessageService"></app-new-space>
       </cui-tab>
     </cui-tabs>
 
