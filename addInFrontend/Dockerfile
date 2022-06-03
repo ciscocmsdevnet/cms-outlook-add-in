@@ -1,5 +1,5 @@
 ### STAGE 1: Build ###
-FROM node:14-alpine AS build
+FROM node:18-alpine AS build
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install -g npm && npm install --force
