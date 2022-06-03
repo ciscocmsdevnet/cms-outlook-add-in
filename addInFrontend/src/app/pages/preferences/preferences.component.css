@@ -1,0 +1,3 @@
+::ng-deep .mat-ink-bar {
+      background-color: var(--cui-accent-color) !important;
+  }

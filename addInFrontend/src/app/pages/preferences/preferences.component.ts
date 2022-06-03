@@ -4,6 +4,7 @@ import {  InvitationResponse } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
 
+
 @Component({
   selector: 'app-preferences',
   templateUrl: './preferences.component.html',
