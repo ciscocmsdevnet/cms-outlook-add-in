@@ -1,15 +1,15 @@
 <ng-container *ngIf="error$|async as error">
     <div class="alert alert-danger" *ngIf="showError">
-        {{ error }}
         <a class="qtr-margin-left toast__close icon-close" (click)="onCloseError()"></a>
+        {{ error }}
     </div>    
 </ng-container>
 
 <ng-container *ngIf="message$|async as message">
     <div class="alert alert--success" *ngIf="showMessage">
         <div class="alert__message">
-            {{ message }}
             <a class="qtr-margin-left toast__close icon-close" (click)="onCloseMessage()"></a>
+            {{ message }}
         </div>
     </div>
 </ng-container>

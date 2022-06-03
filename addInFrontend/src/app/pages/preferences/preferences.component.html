@@ -1,24 +1,25 @@
 
 <div class="base-margin">
     <app-user-header></app-user-header>
-    <cui-tabs [(activeTabIndex)]="tabIndex" (activeTabIndexChange)="onTabChange()" >
-      <cui-tab label="Select Meeting Space">
+    <mat-tab-group  mat-stretch-tabs animationDuration="0ms" [(selectedIndex)]="tabIndex" (activeTabIndexChange)="onTabChange()" >
+      <mat-tab label="Select Space">
         <app-select-space 
         *ngIf="tabIndex==0" 
         [cmsapiServce]="cmsapiServce" 
         [createdSpaceId]="newSpaceId"
         ></app-select-space>
-      </cui-tab>
-      <cui-tab label="Create New Space">
+      </mat-tab>
+      <mat-tab label="Create Space">
         <app-new-space 
         *ngIf="tabIndex==1" 
         (switchTabevent)="setTab($event)"  
         (setNewSpace)="setNewSpaceId($event)"
         [cmsapiServce]="cmsapiServce" 
         ></app-new-space>
-      </cui-tab>
-    </cui-tabs>
+      </mat-tab>
+    </mat-tab-group>
 </div>
+
 
 
 

@@ -1,35 +1,38 @@
-<form  #newspaceForm="ngForm" (ngSubmit)="onCreateSpace(newspaceForm)">
-    <div class="form-group">
-        <div class="form-group__text">
-            <input 
-            id="space_name" 
-            placeholder="Enter Space Name" 
-            name="space_name" 
-            ngModel
-            required
-            >
-        </div> 
-    </div>
-    <div class="form-group dropdown">
-        <div class="form-group__text select">
-          <label for="space_temps">Select Space Template</label>
-          <select  class="form-group__text select" *ngIf="spacetemps.length > 0; else loading" ngModel name="space_temps" id="space_temps" required>
-            <option *ngFor="let spacetemp of spacetemps" [ngValue]="spacetemp">
-              {{ spacetemp.name }}
-            </option>
-          </select>
+<div class="base-margin">
+    <form  #newspaceForm="ngForm" (ngSubmit)="onCreateSpace(newspaceForm)">
+        <div class="form-group">
+            <div class="form-group__text">
+                <input 
+                id="space_name" 
+                placeholder="Enter Space Name" 
+                name="space_name" 
+                ngModel
+                required
+                >
+            </div> 
         </div>
-    </div>
-    <div class="row">
-        <div class="col-1"></div>
-            <div class="col-10">
-            <div class="dbl-margin-top">
-                <button *ngIf="!showCreateButton; else loading" class="btn btn--justified" type="submit" [innerText]="'Create'" [disabled]="!newspaceForm.valid && !showCreateButton" title="Create"></button>
+        <div class="form-group dropdown">
+            <div class="form-group__text select">
+              <label for="space_temps">Select Space Template</label>
+              <select  class="form-group__text select" *ngIf="spacetemps.length > 0; else loading" ngModel name="space_temps" id="space_temps" required>
+                <option *ngFor="let spacetemp of spacetemps" [ngValue]="spacetemp">
+                  {{ spacetemp.name }}
+                </option>
+              </select>
             </div>
-            </div>
-        <div class="col-1"></div>
-    </div>
-</form>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+                <div class="col-10">
+                <div class="dbl-margin-top">
+                    <button *ngIf="!showCreateButton; else loading" class="btn btn--justified" type="submit" [innerText]="'Create'" [disabled]="!newspaceForm.valid && !showCreateButton" title="Create"></button>
+                </div>
+                </div>
+            <div class="col-1"></div>
+        </div>
+    </form>
+</div>
+
 
 <ng-template #loading>
     <div class="loading-dots base-margin">
