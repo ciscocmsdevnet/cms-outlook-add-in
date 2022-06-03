@@ -4,7 +4,8 @@
  */
 
 /* global global, Office, self, window */
-BACKENDURL = 'https://raiatea.cisco.com:9443/addin/v1'
+// BACKENDURL = 'https://raiatea.cisco.com:9443/addin/v1'
+BACKENDURL = window.env["backendurl"]
 
 Office.onReady(() => {
   // If needed, Office.js is ready to be called

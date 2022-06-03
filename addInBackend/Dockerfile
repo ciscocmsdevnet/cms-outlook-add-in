@@ -6,11 +6,13 @@ RUN mkdir /certs
 
 COPY ./requirements.txt /code/requirements.txt
 
+COPY ./certs/* /certs/
+
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY ./app /code/app
 
 WORKDIR /code/app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9443"]
-#CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "9443", "--ssl-keyfile=/certs/certificate.key", "--ssl-certfile=/certs/certificate.cer"]
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9443"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9443", "--ssl-keyfile=/certs/certificate.key", "--ssl-certfile=/certs/certificate.cer"]
