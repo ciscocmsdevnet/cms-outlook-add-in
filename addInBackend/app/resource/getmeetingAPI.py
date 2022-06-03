@@ -28,7 +28,7 @@ async def getInstantMeetingLink(request: Request,
                   ):
 
   ## Checking if any JID attribute is provided for user search on CMS
-  if config.JID_ATTRIBUTE:
+  if config.JID_ATTRIBUTE and (config.JID_ATTRIBUTE != "None"):
     jidMappedUserID = f"{username.split('@')[0]}.{config.JID_ATTRIBUTE}@{username.split('@')[1]}"
   else:
     jidMappedUserID = username
