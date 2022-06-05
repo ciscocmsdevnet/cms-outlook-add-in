@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { SpaceTemplate } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
+import { SelectedSpaceService } from 'src/app/services/selected-space.service';
 
 @Component({
   selector: 'app-new-space',
@@ -15,14 +16,13 @@ export class NewSpaceComponent implements OnInit {
 
   @Output() 
   switchTabevent = new EventEmitter<number>();
-  @Output() 
-  setNewSpace = new EventEmitter<string>();
   
   public spacetemps: SpaceTemplate[] = [];
   public showCreateButton: boolean = false;
 
   constructor(
-    private errmessageService: ErrmessagesService
+    private errmessageService: ErrmessagesService,
+    private selectedSpaceService: SelectedSpaceService
   ) { }
 
   ngOnInit(): void {
@@ -46,15 +46,18 @@ export class NewSpaceComponent implements OnInit {
           newspaceForm.controls['space_temps'].setValue('')
           this.showCreateButton = false
           this.switchTabevent.emit(0)
-          this.setNewSpace.emit(newspace.guid)
+          this.cmsapiServce.getUserSpaces().subscribe(
+            {
+              next: () => {
+                this.selectedSpaceService.setSelectedSpaceid(newspace.guid)
+                this.selectedSpaceService.setSelectedAccessid('')
+              }
+            }
+          )
+          
         }
       }
-      
     )
-    
   }
-
-
-
 
 }
