@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { SpaceTemplate } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
@@ -18,7 +18,9 @@ export class NewSpaceComponent implements OnInit {
   switchTabevent = new EventEmitter<number>();
   
   public spacetemps: SpaceTemplate[] = [];
-  public showCreateButton: boolean = false;
+  public showLoading: boolean = false;
+  public validForm: boolean = false;
+  createSpaceForm!: FormGroup;
 
   constructor(
     private errmessageService: ErrmessagesService,
@@ -26,6 +28,7 @@ export class NewSpaceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.initForm()
     // get space templates
     this.cmsapiServce.getUserSpaceTemplates().subscribe(
       {
@@ -36,15 +39,32 @@ export class NewSpaceComponent implements OnInit {
     )
   }
 
-  onCreateSpace(newspaceForm: NgForm){
-    this.showCreateButton = true
-    this.cmsapiServce.createSpaceFromTemplate(newspaceForm.controls['space_name'].value, newspaceForm.controls['space_temps'].value['id']).subscribe(
+  private initForm() {
+    this.createSpaceForm = new FormGroup({
+      'name': new FormControl<string>('', 
+      [
+        Validators.required,
+        Validators.minLength(1)
+        
+      ]),
+      'templates': new FormControl<string>('', 
+      [
+        Validators.required,
+        Validators.minLength(1)
+      ]
+      ),
+    });
+  }
+
+  onCreateSpace(){
+    this.showLoading = true
+    this.cmsapiServce.createSpaceFromTemplate(this.createSpaceForm.controls['name'].value, this.createSpaceForm.controls['templates'].value).subscribe(
       {
         next: (newspace)=>{
           this.errmessageService.showMesssage("New space '"+newspace.name+"' has been created!")
-          newspaceForm.controls['space_name'].setValue('')
-          newspaceForm.controls['space_temps'].setValue('')
-          this.showCreateButton = false
+          this.createSpaceForm.controls['name'].setValue('')
+          this.createSpaceForm.controls['templates'].setValue('')
+          this.showLoading = false
           this.switchTabevent.emit(0)
           this.cmsapiServce.getUserSpaces().subscribe(
             {
@@ -54,7 +74,6 @@ export class NewSpaceComponent implements OnInit {
               }
             }
           )
-          
         }
       }
     )

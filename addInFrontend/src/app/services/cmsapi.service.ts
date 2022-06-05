@@ -230,6 +230,7 @@ export class CmsapiService {
       map(
         (m) => {
           const lm: SpaceTemplate[] = m['coSpaceTemplates']
+          lm.unshift({id: '', name: ''})
           return lm
         }
       ),
