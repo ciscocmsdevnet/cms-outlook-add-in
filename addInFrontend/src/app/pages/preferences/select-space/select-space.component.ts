@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AccessMethod, InvitationResponse, Preferences, Space } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
@@ -19,6 +19,8 @@ export class SelectSpaceComponent implements OnInit {
   public tabIndex = 0;
   public selectedSpaceGUID: string = '';
   public selectedAccessGUID: string = '';
+  public selectedSpacesForm!: FormGroup;
+
   
   private userPreferences: Preferences = { 'defaultspaceGUID': this.selectedSpaceGUID, 'defaultaccessmethodGUID': this.selectedAccessGUID };
 
@@ -43,6 +45,7 @@ export class SelectSpaceComponent implements OnInit {
     this.invitation$ = this.cmsapiServce.invitation$;
     this.selectedspaceid$ = this.selectedSpaceService.selectedspaceid$
     this.selectedaccessid$ = this.selectedSpaceService.selectedaccessid$
+    this.initForm()
     this.getStoredPreferences()
     this.cmsapiServce.getUserSpaces().subscribe();
     
@@ -63,16 +66,29 @@ export class SelectSpaceComponent implements OnInit {
     )
 
   }
+  private initForm() {
+    this.selectedSpacesForm = new FormGroup({
+      'space': new FormControl<string>('', 
+      [
+        Validators.required,
+        Validators.minLength(1)
+        
+      ]),
+      'access': new FormControl<string>('', 
+      [
+        Validators.required,
+        Validators.minLength(1)
+      ]
+      ),
+    });
+  }
 
   getMeetinglink() {
     this.errmessageService.showMesssage('');
     this.outlookService.run_command()
   }
 
-  savePreferences(form: NgForm) {
-    if (!form.valid) {
-      return;
-    }
+  savePreferences() {
     this.userPreferences.defaultspaceGUID = this.selectedSpaceGUID
     this.userPreferences.defaultaccessmethodGUID = this.selectedAccessGUID
     this.cmsapiServce.savepreferences(this.userPreferences)
