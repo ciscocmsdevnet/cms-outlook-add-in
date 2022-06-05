@@ -1,5 +1,5 @@
 <div class="base-margin">
-    <form class="form-group" #webbridgeForm="ngForm" (ngSubmit)="onNext(webbridgeForm)">
+    <form class="form-group" [formGroup]="webbridgeForm" (ngSubmit)="onNext()">
         <div class="section">
           <h5 class="text-weight-600">Which CMS web app site do you want to use?</h5>
         </div>
@@ -9,12 +9,10 @@
                     <label class="radio">
                         <input 
                         id="i.toString()" 
-                        [value]='item' 
                         type="radio" 
-                        name="sites"
-                        ngModel 
-                        (change)="changeSelection(webbridgeForm)" 
-                        required
+                        formControlName="radio"
+                        (change)="changeSelection()" 
+                        [value]="item"
                         >
                         <span class="radio__input"></span>
                         <span class="radio__label">{{item}}</span>
@@ -24,18 +22,23 @@
                     <div class="form-group__text base-margin-left">
                         <input 
                         id="webbridge" 
+                        type="text"
                         placeholder="Web-bridge URL" 
-                        ngModel 
-                        name="webbridge" 
-                        [disabled]="!ownwebbridgeSelected" 
-                        [required]="ownwebbridgeSelected">
+                        formControlName="input" 
+                        >
                     </div> 
                 </div>
                 <div class="row">
                     <div class="col-1"></div>
                         <div class="col-10">
                         <div class="dbl-margin-top">
-                            <button class="btn btn--justified" type="submit" [innerText]="'Next'" [disabled]="!webbridgeForm.valid" title="Next"></button>
+                            <button 
+                            class="btn btn--justified" 
+                            type="submit" 
+                            [innerText]="'Next'" 
+                            [disabled]="!webbridgeForm.valid" 
+                            title="Next"
+                            ></button>
                         </div>
                         </div>
                     <div class="col-1"></div>
