@@ -3,16 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject, Observable } from 'rxjs';
-import { User } from '../models/user.model';
+import { AuthResponseData, User } from '../models/user.model';
 import { ErrmessagesService } from './errmessages.service';
 import { environment } from 'src/environments/environment';
-
-
-
-export interface AuthResponseData {
-  jwt: string
-  idToken: string
-}
 
 @Injectable()
 export class AuthService {
@@ -32,24 +25,9 @@ export class AuthService {
     this.page_navigator()
   }
 
-  check_login() {
-    const userData = localStorage.getItem('userData');
-    if (userData) {
-      let userparsed: User = this.nullUser
-      try {
-        userparsed = JSON.parse(userData);
-        if (userparsed) {
-          this.usersubject.next(userparsed);
-        } else {
-          console.log("NO USER")
-        }
-      } catch (e) {
-        alert(e); // error in the above string (in this case, yes)!
-      }
-    }
-  }
+ 
 
-  page_navigator() {
+  private page_navigator() {
     this.check_login()
     const user = this.usersubject.getValue()
     if (user.token) {
@@ -67,7 +45,7 @@ export class AuthService {
     }
   }
 
-  validate() {
+  private validate() {
     const userData = this.usersubject.getValue()
     return this.http
     .post(
@@ -88,6 +66,23 @@ export class AuthService {
       ),
       shareReplay()
       )
+  }
+
+  private check_login() {
+    const userData = localStorage.getItem('userData');
+    if (userData) {
+      let userparsed: User = this.nullUser
+      try {
+        userparsed = JSON.parse(userData);
+        if (userparsed) {
+          this.usersubject.next(userparsed);
+        } else {
+          console.log("NO USER")
+        }
+      } catch (e) {
+        alert(e); // error in the above string (in this case, yes)!
+      }
+    }
   }
 
   login(email: string, password: string, webbridge: string) {
@@ -136,8 +131,7 @@ export class AuthService {
     //TODO add delete session from CMS?
   }
 
-
-  private handleAuthentication(
+  handleAuthentication(
     email: string,
     jwt: string,
     webbridge: string

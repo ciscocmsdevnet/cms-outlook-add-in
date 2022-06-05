@@ -21,6 +21,7 @@ import { SelectSpaceComponent } from './pages/preferences/select-space/select-sp
 import { NewSpaceComponent } from './pages/preferences/new-space/new-space.component';
 import { CommandsComponent } from './pages/commands/commands.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { SelectedSpaceService } from 'src/app/services/selected-space.service';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     CmsapiService,
     OutlookService,
     ErrmessagesService,
+    SelectedSpaceService,
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: AuthInterceptorService,

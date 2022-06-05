@@ -22,15 +22,12 @@ export class CmsapiService {
   userpref$: Observable<Preferences|null> = this.userprefsubject.asObservable();
   invitation$: Observable<InvitationResponse|null> = this.invitationsubject.asObservable();
 
-  private prev_invitation: InvitationResponse|null = null;
 
   constructor( private http: HttpClient, 
                private authService: AuthService,
                private errmessagesService: ErrmessagesService) {
-    
     this.authService.user$.subscribe( (user) => { this.user = user})
     this.getCurrentUserPref()
-    this.getCurrentInvitation()    
   }
 
   private getCurrentUserPref(){
@@ -50,7 +47,7 @@ export class CmsapiService {
   }
 
 
-  private getCurrentInvitation() {
+  public getCurrentInvitation() {
     const invitation = localStorage.getItem('invitation');
     if (invitation) {
         let invitationparsed: InvitationResponse;
@@ -66,8 +63,6 @@ export class CmsapiService {
     }
   }
 
-  
-  
   getUserSpaces() {
     return this.http
     .post(
@@ -145,7 +140,6 @@ export class CmsapiService {
   }
 
   getMeetingInformation(selectedSpaceGUID: string, selectedAccessGUID: string) {
-    this.invitationsubject.next(null)
     this.errmessagesService.showMesssage('');
     return this.http
     .post<InvitationResponse>(
@@ -170,36 +164,18 @@ export class CmsapiService {
         }
       ),
         tap((invitation: InvitationResponse)=> {
+            if (this.invitationsubject.getValue()?.invitation != invitation.invitation) {
+              this.errmessagesService.showMesssage("A new meeting invitation is available." )
+            }
             this.invitationsubject.next(invitation)
-            this.errmessagesService.showMesssage("A new meeting invitation is available." )
         }),
         shareReplay()
         )
   }
 
-  updateInvitation(index: number) {
-    if (index==1) {
-      if (this.invitationsubject.value) {
-        this.prev_invitation = this.invitationsubject.value
-        this.invitationsubject.next(null)
-      }
-    }else{
-      if (this.prev_invitation) {
-        this.invitationsubject.next(this.prev_invitation)
-      } else {
-        let inv = localStorage.getItem('invitation')
-        if (inv) {
-          this.invitationsubject.next(JSON.parse(inv))
-        }
-      }
-    }
-  }
-
   clearInvitationSubj(){
-    this.prev_invitation = null
     this.invitationsubject.next(null)
   }
-
 
   getPredefinedSites(): Observable<string[]> {
     return this.http
@@ -254,9 +230,6 @@ export class CmsapiService {
       map(
         (m) => {
           const lm: SpaceTemplate[] = m['coSpaceTemplates']
-          // if (lm.length == 0) {
-          //   return [{"name":"No templates", "id": ""}]
-          // }
           return lm
         }
       ),
@@ -264,36 +237,7 @@ export class CmsapiService {
     )
   }
 
-  // private saveDefaultSpaceAndMethodOnBackend(selectedSpaceGuid: string, selectedAccessGiud: string) {
-  //   return this.http
-  //   .post<any>(
-  //     this.authService.BACKENDURL+'/defaultSpace/',
-  //     {
-  //       spaceGUID: selectedSpaceGuid,
-  //       authToken: this.user?.token,
-  //       webBridgeURL: this.user?.webbridge,
-  //       accessMethodGUID: selectedAccessGiud
-  //     },
-  //   )
-  //   .pipe(
-  //     catchError(
-  //       err => {
-  //         if (err.error.detail) {
-  //           this.errmessagesService.showError(err.error.detail);
-  //         } 
-  //         else if (err.message) {
-  //           this.errmessagesService.showError(err.message)
-  //         }          
-  //         return throwError(() => {});
-  //       }
-  //     ),
-  //     shareReplay()
-  //   )
-  // }
-
   createSpaceFromTemplate(space_name: string, template_id: string) {
-    // console.log("created SpaceFromTemplate", space_name, template_id)
-    // return of("created SpaceFromTemplate")
     return this.http
     .post<NewSpaceResponse>(
       this.authService.BACKENDURL+'/createSpace',
@@ -316,20 +260,14 @@ export class CmsapiService {
           return throwError(() => {});
         }
       ),
-      tap(
-         space => {
-
-         }
-      ),
+     
       shareReplay()
     )
   }
 
-
   savepreferences(userPreferences: Preferences){
     localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
     localStorage.setItem('invitation', JSON.stringify(this.invitationsubject.getValue()));
-    // this.saveDefaultSpaceAndMethodOnBackend(userPreferences.defaultspaceGUID, userPreferences.defaultaccessmethodGUID).subscribe()
   }
 
 

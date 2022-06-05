@@ -5,4 +5,7 @@ export interface User {
      webbridge: string
 }
 
-
+export interface AuthResponseData {
+     jwt: string
+     idToken: string
+}

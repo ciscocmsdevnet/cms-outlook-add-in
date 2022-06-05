@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthResponseData, AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
