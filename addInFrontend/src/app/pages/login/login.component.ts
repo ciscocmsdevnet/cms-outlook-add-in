@@ -14,7 +14,6 @@ import { OutlookService } from 'src/app/services/outlook.service';
 })
 export class LoginComponent implements OnInit {
   isLoading = false;
-  username$!: Observable<string>;
   tokenisexpired$!: Observable<Boolean>;
   loginForm!: FormGroup;
 
@@ -28,7 +27,13 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.initForm()
     this.outlookService.get_outlook_username()  
-    this.username$ = this.outlookService.loginusername$
+    this.outlookService.loginusername$.subscribe(
+      {
+        next:(email)=>{
+          this.loginForm.controls['email'].setValue(email)
+        }
+      }
+    )
     this.tokenisexpired$ = this.authService.tokenisexpired$
   }
 
