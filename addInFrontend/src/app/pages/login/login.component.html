@@ -1,20 +1,40 @@
 <div class="base-margin">
-  <form class="form-group" #authForm="ngForm" (ngSubmit)="onLogin(authForm)">
-   
+  <form class="form-group" [formGroup]="loginForm"  (ngSubmit)="onLogin()">
     <div class="section">
-      <h6 class="text-weight-600">Provide your Username/Password</h6>
-      <div class="form-group__text">
-        <input class="qtr-margin-bottom" type="email" id="email" placeholder="Username" [ngModel]="username$ | async" name="email" required email />
-        <input type="password" id="password" placeholder="Password" ngModel name="password" required />
-      </div>  
-      <span class="text-weight-600">* we do not store any credentials</span>
+      <h5 class="text-weight-600">Provide your Username/Password</h5>
+    </div>
+    <div class="section">
+      <div class="form-group">
+        <div class="form-group__text">
+          <label for="email">Username:</label>
+          <input 
+          type="email" 
+          id="email" 
+          placeholder="username@domain" 
+          formControlName="email" 
+          />
+        </div>  
+      </div>
+      <div class="form-group">
+        <div class="form-group__text">
+          <label for="password">Password:</label>
+          <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          />
+        </div>  
+      </div>
+      <div class="section">
+        <span class="text-weight-500 text-italic">* we do not store any credentials</span>
+      </div>
     </div>
    
     <div class="row">
       <div class="col-1"></div>
       <div class="col-10">
         <div class="dbl-margin-top">
-          <button *ngIf="!isLoading;else loading" class="btn btn--justified" type="submit" [innerText]="'Login'" [disabled]="!authForm.valid" title="Login"></button>
+          <button *ngIf="!isLoading;else loading" class="btn btn--justified" type="submit" [innerText]="'Login'" [disabled]="!loginForm.valid" title="Login"></button>
         </div>
       </div>
       <div class="col-1"></div>
