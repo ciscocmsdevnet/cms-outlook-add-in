@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
 import { OutlookService } from 'src/app/services/outlook.service';
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   username$!: Observable<string>;
   tokenisexpired$!: Observable<Boolean>;
-  
+  loginForm!: FormGroup;
 
   constructor(private router: Router, 
     private route: ActivatedRoute,
@@ -26,40 +26,48 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.initForm()
     this.outlookService.get_outlook_username()  
     this.username$ = this.outlookService.loginusername$
     this.tokenisexpired$ = this.authService.tokenisexpired$
+  }
+
+  private initForm() {
+    this.loginForm = new FormGroup({
+      'email':new FormControl<string>('',[Validators.required, Validators.email]),
+      'password':new FormControl<string>('',[Validators.required])
+    });
   }
 
   reset(){
     this.authService.logout()
   }
  
-  onLogin(form: NgForm): void {
+  onLogin(): void {
     this.isLoading = true;
     this.errmessageService.showError('');
-    if (!form.valid) {
+    if (!this.loginForm.valid) {
       this.errmessageService.showError('Form is not valid');
       return;
     }
-    const email = form.value.email;
-    const password = form.value.password;
+    const email = this.loginForm.value.email;
+    const password = this.loginForm.value.password;
     const webbridge = this.route.snapshot.paramMap.get('webbridge')!;
-    form.controls['email'].disable();
-    form.controls['password'].disable();
+    this.loginForm.controls['email'].disable();
+    this.loginForm.controls['password'].disable();
 
     this.authService.login(email, password, webbridge).subscribe(
       {
         next: () => {
           this.isLoading = false;
-          form.controls['email'].enable();
-          form.controls['password'].enable();
+          this.loginForm.controls['email'].enable();
+          this.loginForm.controls['password'].enable();
           this.router.navigate(['/preferences']);
         },
         error: () => {
           this.isLoading = false;
-          form.controls['email'].enable();
-          form.controls['password'].enable();
+          this.loginForm.controls['email'].enable();
+          this.loginForm.controls['password'].enable();
         }    
       }
     );
