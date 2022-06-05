@@ -1,11 +1,10 @@
 <div class="base-margin">
   <form [formGroup]="selectedSpacesForm" (ngSubmit)="savePreferences()">
-      <div class="form-group dropdown">
+      <div class="form-group">
         <div class="form-group__text">
           <label for="space">Select Space</label>
-          <mat-select  
+          <mat-select
           *ngIf="(defspaces$ | async)!.length > 0; else loading" 
-          class="panel panel--bordered"
           type="space" 
           id="space"
           formControlName="space"
@@ -21,11 +20,10 @@
       </div>
 
       <ng-container *ngIf="selectedSpaceGUID != ''" >
-        <div class="form-group dropdown" *ngIf="((defaccess$ | async)!.length > 0); else loading">
+        <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
           <div class="form-group__text">
             <label for="access">Select Access Method</label>
             <mat-select 
-            class="panel panel--bordered"
             type="access" 
             id="access" 
             (selectionChange)="changeDefAccess()"
