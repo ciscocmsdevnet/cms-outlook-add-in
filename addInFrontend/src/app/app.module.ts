@@ -21,7 +21,8 @@ import { SelectSpaceComponent } from './pages/preferences/select-space/select-sp
 import { NewSpaceComponent } from './pages/preferences/new-space/new-space.component';
 import { CommandsComponent } from './pages/commands/commands.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { SelectedSpaceService } from 'src/app/services/selected-space.service';
+import { MatSelectModule } from '@angular/material/select';
+import { SelectedSpaceService } from './services/selected-space.service';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { SelectedSpaceService } from 'src/app/services/selected-space.service';
     ReactiveFormsModule,
     MatTabsModule,
     NoopAnimationsModule,
+    MatSelectModule,
   ],
   providers: [
     AuthService,
