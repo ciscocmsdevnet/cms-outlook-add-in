@@ -130,3 +130,6 @@ dmypy.json
 
 ## Ignore certs folder
 certs/
+
+## MAC files
+.DS_Store
