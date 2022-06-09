@@ -70,8 +70,14 @@ Stage 1: GENERATE CERTIFICATES
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
 ![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
+	
+Stage 2: MODIFY MANIFEST FILE/CORS FILES
+	
+1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
+2. Update `auth.server.ts` file under `addInFrontent/src/app/services` with middleware hostname. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
+3. Update backend `main.py` origin list with middleware hostname.Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
 
-Stage 2: DEPLOY MIDDLEWARE
+Stage 3: DEPLOY MIDDLEWARE
 
 **You can choose to create docker image from the code base directly or use the images provided in the code base**. Below steps cover on "How to use images provided in this code base"
 1. Login to same linux server and go to repo folder
@@ -81,13 +87,7 @@ Stage 2: DEPLOY MIDDLEWARE
    1. docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi
    2. docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb
 		* You can run  `pwd` to get your certs directory path
-	
-Stage 3: MODIFY MANIFEST FILE/CORS FILES
-	
-1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-2. Update `auth.server.ts` file under `addInFrontent/src/app/services` with middleware hostname. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-3. Update backend `main.py` origin list with middleware hostname.Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-
+		* 
 Stage 4: Add Add-In to Outlook Clients
 	
 2. Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
