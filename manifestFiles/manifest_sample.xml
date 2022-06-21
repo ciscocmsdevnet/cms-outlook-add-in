@@ -9,14 +9,11 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="CMS Meeting Scheduler"/>
   <Description DefaultValue="Allow users to schedule CMS meetings"/>
-  <IconUrl DefaultValue="https://localhost:4200/assets/icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://localhost:4200/assets/icon-64.png"/>
+  <IconUrl DefaultValue="https://raiatea.cisco.com/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://raiatea.cisco.com/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://gobeta.webex.com"/>
   <AppDomains>
     <AppDomain>https://raiatea.cisco.com</AppDomain>
-    <AppDomain>https://localhost</AppDomain>
-    <AppDomain>https://10.48.80.250</AppDomain>
-    <AppDomain>https://10.104.207.98</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox"/>
@@ -29,7 +26,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://localhost:4200"/>
+        <SourceLocation DefaultValue="https://raiatea.cisco.com"/>
         <RequestedHeight>450</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -92,13 +89,13 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:4200/assets/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:4200/assets/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:4200/assets/icon-64.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://raiatea.cisco.com/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://raiatea.cisco.com/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://raiatea.cisco.com/assets/icon-64.png"/>
       </bt:Images>
       <bt:Urls>
-        <!-- <bt:Url id="Commands.Url" DefaultValue="https://localhost:4200/commands"/> -->
-        <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:4200"/>
+        <!-- <bt:Url id="Commands.Url" DefaultValue="https://raiatea.cisco.com/commands"/> -->
+        <bt:Url id="Taskpane.Url" DefaultValue="https://raiatea.cisco.com"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Cisco Meeting Server"/>

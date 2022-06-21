@@ -29,16 +29,16 @@ class userInfoPayload(getSpacesInput):
 app = FastAPI()
 
 # Allow CORS from these origins
-origins = [
-    "https://localhost:9443",
-    "https://127.0.0.1:9443",
-    "https://localhost",
-    "https://127.0.0.1",
-    "https://localhost:4200",
-    "https://<Hostname>",
-    "https://<Hostname>:9443",
-    "https://<Hostname>:4200",
-]
+
+Hostname = '<Hostname>'
+
+allowedDomains = ['localhost','127.0.0.1', Hostname]
+
+origins = []
+for domains in allowedDomains:
+  origins.append(f"https://{domains}:9443")
+  origins.append(f"https://{domains}:4200")
+  origins.append(f"https://{domains}")
 
 app.add_middleware(
     CORSMiddleware,

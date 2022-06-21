@@ -1,17 +1,21 @@
 # Cisco Meeting Server Outlook Add-In
+**Get CMS Meeting Information while scheduling Outlook meeting**
 
-Cisco Meeting Server is an on-premies meeting server. This repository helps with following
+Cisco Meeting Server is an on-premises meeting server. This DevNet Projects helps users to add CMS meeting into this outlook invite while scheduling a meeting.
 
-- Setuping up a Middleware in your environment, acting like a proxy for Scheduling CMS meetings
-- An outlook Add-in manifest file, which you can add to your Outlook client
+- This Readme will help you:
+  - Setup up a Middleware, acting like a proxy for interacting with CMS
+  - An outlook Add-in manifest file, which you can add to your Outlook clients
 
 ## DISCLAIMER: 
 
-THIS ADD-IN IS JUST FOR POC PURPOSES. PLEASE DO NOT USE ADD-IN WHEN YOUR CMS CLUSTER IS BUSY SERVING MEETINGS. DO NOT DEPLOY THIS MIDDLEWARE IN DMZ, AS WE HAVE NOT EVALUATED ANY SECURITY REQUIREMENT FOR THIS SOLUTION. 
-PLEASE NOTE, NO TAC SUPPORT WILL BE PROVIDED FOR THIS POC. PLEASE REACH OUT TO sakhanej@cisco.com IF YOU INTEND TO DEPLOY IN CERTAIN RESTRICTED ENVIRONMENT.
+- **THIS ADD-IN IS JUST FOR POC PURPOSES. PLEASE DO NOT USE ADD-IN WHEN YOUR CMS CLUSTER IS BUSY SERVING MEETINGS. DO NOT DEPLOY THIS MIDDLEWARE IN DMZ, AS WE HAVE NOT EVALUATED ANY SECURITY REQUIREMENTS FOR THIS SOLUTION.**
 
-DOCKER IMAGES PROVIDED IN THIS POC ARE  VERIFIED AGAINST  DOCKER-SCAN-PLUGIN AVAILABLE FROM DOCKER HUB. THESE ARE NOT CISCO APPROVED DOCKER IMAGES.
-PLEASE DO NOT ATTEMPT TO TRY THIS ON ANY PRODUCTION SYSTEM, THIS POC IS JUST MEANT TO CAPTURE YOUR FEEDBACK AROUND THE SOLUTION
+- **PLEASE NOTE, NO TAC SUPPORT WILL BE PROVIDED FOR THIS POC. PLEASE REACH OUT TO `cmsdevelopers@cisco.com` IF YOU INTEND TO DEPLOY IN CERTAIN RESTRICTED ENVIRONMENT.**
+
+- **DOCKER IMAGES PROVIDED IN THIS POC ARE  VERIFIED AGAINST  DOCKER-SCAN-PLUGIN AVAILABLE FROM DOCKER HUB. THESE ARE NOT CISCO APPROVED DOCKER IMAGES.**
+  
+- **PLEASE DO NOT ATTEMPT TO TRY THIS ON ANY PRODUCTION SYSTEM, THIS POC IS JUST MEANT TO CAPTURE YOUR FEEDBACK AROUND THE SOLUTION**
 
 ## Solution Highlights:
 
@@ -22,9 +26,9 @@ PLEASE DO NOT ATTEMPT TO TRY THIS ON ANY PRODUCTION SYSTEM, THIS POC IS JUST MEA
 
 
 ## Pre-requisites:
-- A linux machine (2gb RAM, 2vCPU, 50GB hard disk), pick any OS (Ubuntu, CentOS). This guide follows commands relevant to Ubuntu System. If your using any other OS, the commands should be modified accordingly.
+- An Ubuntu machine with minimum specifications (2GB RAM, 1vCPU, 50GB HDD). If your using any other linux OS, the commands should be modified accordingly.
 - Install docker service and openssl on this linux machine. Logout and Login after running these commands
-```
+```shell
 sudo apt-get update && sudo apt-get install docker.io openssl
 sudo usermod -aG docker $USER
 ```
@@ -37,6 +41,9 @@ sudo usermod -aG docker $USER
   - Outlook on the web for Exchange 2016 or later
   - Outlook on the web for Exchange 2013
   - Outlook.com
+
+- Your CMS Infrastructure should be running web-bridge and users should be able to login to webapp
+- We currently do not support CMS web app running SSO based login.
 
 
 
@@ -54,43 +61,47 @@ sudo usermod -aG docker $USER
 
 ## Deployment Steps:
 
-Stage 1: GENERATE CERTIFICATES
+**Stage 1: Generate Certificates**
 
-1. Get a hostname for your middleware service, eg: cmsscheduler.abc.com
+1. Get a hostname for your middleware service, eg: `cmsscheduler.abc.com`
 2. Add DNS entry for this hostname in your DNS server or your system's  `/etc/host` file
 3. Login to your linux machine and follow below steps:
-   1. Clone this repository: `git clone https://github.com/ciscocmsdevnet/cms-outlook-add-in.git`
-   2. Create a folder `certs` in this git repo: `mkdir certs`
-   3. Generate certificate in this `certs` folder:
-      1. Generate a CSR: `sudo openssl req -new -newkey rsa:2048 -nodes -keyout certificate.key -out certificate.csr`
-      2. Specify necessary details required for the certificate (Country, State, hostname etc). Below snippet is just for reference [Snapshot 1]
-      3. You would get key file and csr file in this `certs` folder: certificate.key and certificate.csr
-      4. Get the CSR signed by you internal CA and copy it under same folder. 
+   1. Issue below commands on your Shell.
+   ```shell
+   git clone https://github.com/ciscocmsdevnet/cms-outlook-add-in.git # Clone the Repository
+   cd cms-outlook-add-in ## Go inside the github Repo folder
+   mkdir certs ## Create a folder to store Certificates
+   cd certs ## Go inside certs folder
+   sudo openssl req -new -newkey rsa:2048 -nodes -keyout certificate.key -out certificate.csr ## Generate certificates. Refer [Snapshot 1] for filling necessary Details
+   ```
+   2. Get the CSR signed by you internal CA and copy it under same certs folder.  
 
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
+> *Snapshot 1*
 ![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
 	
-Stage 2: MODIFY MANIFEST FILE/CORS FILES
+**Stage 2: Update Files with your Middleware Hostname**
 	
-1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-2. Update `auth.server.ts` file under `addInFrontent/src/app/services` with middleware hostname. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-3. Update backend `main.py` origin list with middleware hostname.Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
+- Replace `<Hostname>` with your middleware hostname (as defined in Stage 1) in following files:
+   1. Add-in Manifest files: `manifest_reference.xml`
+   2. Frontend Service: `addInFrontent/src/app/services/auth.server.ts` *Line 19*
+   3. Backend Service: `main.py` *Line 33*
 
-Stage 3: DEPLOY MIDDLEWARE
+**Stage 3: Create Required Docker Images**
 
-**You can choose to create docker image from the code base directly or use the images provided in the code base**. Below steps cover on "How to use images provided in this code base"
-1. Login to same linux server and go to repo folder
-2. Create backend Image: `docker build -f ./addInBackend/Dockerfile -t addinfastapi ./addInBackend`
-3. Create frontend Image: `docker build -f ./addInFrontend/Dockerfile -t cmsschedulerweb ./addInFrontend`
-4. Lets run the service:
-   1. docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi
-   2. docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb
-		* You can run  `pwd` to get your certs directory path
-		* 
-Stage 4: Add Add-In to Outlook Clients
+1. Create backend Image: `docker build -f ./addInBackend/Dockerfile -t addinfastapi ./addInBackend`
+2. Create frontend Image: `docker build -f ./addInFrontend/Dockerfile -t cmsschedulerweb ./addInFrontend`
+
+**Stage 4: Run Docker Containers**
+1. Run Backend Service: `docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi`
+2. Run Frontend Service: `docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb`
+
+> Note: You can run  `pwd` to get your certs directory path when in certs folder
+
+**Stage 5: Add Add-In to Outlook Clients**
 	
-2. Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
+- Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
 
 
 ## Known issues
@@ -99,7 +110,7 @@ Stage 4: Add Add-In to Outlook Clients
   
 ## Getting help
 
-In case of any questions around Add-in, reach out to `sakhanej@cisco.com`
+In case of any questions around Add-in, reach out to `cmsdevelopers@cisco.com`
 
 ## Getting involved
 
@@ -113,4 +124,5 @@ General instructions on _how_ to contribute should be stated with a link to [CON
 ## Credits
 
 1. Evgenii Fedotov (evfedoto@cisco.com)
+2. Saurabh Khaneja (sakhanej@cisco.com)
 ----
