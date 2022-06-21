@@ -64,7 +64,7 @@ sudo usermod -aG docker $USER
 **Stage 1: Generate Certificates**
 
 1. Get a hostname for your middleware service, eg: `cmsscheduler.abc.com`
-2. Add DNS entry for this hostname in your DNS server or your system's  `/etc/host` file
+2. Add DNS entry for this hostname in your DNS server or your system's  `/etc/hosts` file
 3. Login to your linux machine and follow below steps:
    1. Issue below commands on your Shell.
    ```shell
