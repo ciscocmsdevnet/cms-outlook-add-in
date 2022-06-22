@@ -85,8 +85,8 @@ sudo usermod -aG docker $USER
 	
 - Replace `<Hostname>` with your middleware hostname (as defined in Stage 1) in following files:
    1. Add-in Manifest files: `manifest_reference.xml`
-   2. Frontend Service: `addInFrontent/src/app/services/auth.server.ts` *Line 19*
-   3. Backend Service: `main.py` *Line 33*
+   2. Frontend Service: `addInFrontent/src/app/services/auth.service.ts` *Line 19*
+   3. Backend Service: `addInBackend/app/main.py` *Line 33*
 
 **Stage 3: Create Required Docker Images**
 
