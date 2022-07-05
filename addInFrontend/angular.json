@@ -30,10 +30,11 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/fabric.min.css"
             ],
             "scripts": [
-              
+              "src/office.js"
             ]
           },
           "configurations": {
@@ -99,9 +100,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/fabric.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/office.js"
+            ]
           }
         }
       }

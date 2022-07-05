@@ -16,7 +16,7 @@ export interface AuthResponseData {
 @Injectable()
 export class AuthService {
 
-  BACKENDURL = 'https://<Hostname>:9443'
+  BACKENDURL = 'https://localhost:9443'
   private nullUser: User = { email: '', token: '', webbridge: '' }
   private usersubject = new BehaviorSubject<User>(this.nullUser);
   user$: Observable<User> = this.usersubject.asObservable();

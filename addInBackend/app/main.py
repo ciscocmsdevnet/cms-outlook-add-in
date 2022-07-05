@@ -6,6 +6,7 @@ import logging
 from requests.exceptions import ConnectionError
 from fastapi.middleware.cors import CORSMiddleware
 import urllib3
+from os import environ
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class loginPayload(BaseModel):
@@ -30,7 +31,7 @@ app = FastAPI()
 
 # Allow CORS from these origins
 
-Hostname = '<Hostname>'
+Hostname = 'lx346913.dc.polisen.se'
 
 allowedDomains = ['localhost','127.0.0.1', Hostname]
 
@@ -133,7 +134,7 @@ async def getMeetingInformation(getMeetingEmailInvitationInput: getMeetingEmailI
 
     web_bridge_url = f"https://{getMeetingEmailInvitationInput.webBridgeURL}/api/cospaces/{getMeetingEmailInvitationInput.spaceGUID}/accessMethods/{getMeetingEmailInvitationInput.accessMethodGUID}/emailInvitation"
 
-    payload = json.dumps({"language": "en_GB"})
+    payload = json.dumps({"language": f"{environ['LANG']}"})
 
     headers = {'Authorization': f'Bearer {getMeetingEmailInvitationInput.authToken}'}
 
