@@ -41,7 +41,7 @@
     </div>
 
   </form>
-  <div class="row section flex flex-center" *ngIf="(tokenisexpired$ | async)">
+  <div class="row section flex flex-center" *ngIf="(tokenisexpired$ | async) || (error$ | async)">
       <button class="row btn btn btn--link" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"> </button>
   </div>
 </div>
