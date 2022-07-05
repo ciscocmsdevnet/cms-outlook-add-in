@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   tokenisexpired$!: Observable<Boolean>;
   loginForm!: FormGroup;
+  error$!: Observable<string>;
 
   constructor(private router: Router, 
     private route: ActivatedRoute,
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm()
+    this.error$ = this.errmessageService.error$
     this.outlookService.get_outlook_username()  
     this.outlookService.loginusername$.subscribe(
       {
