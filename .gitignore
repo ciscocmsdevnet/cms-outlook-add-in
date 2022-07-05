@@ -136,3 +136,5 @@ node_modules/
 .angular/
 .DS_Store
 .vscode/
+addInFrontend/.DS_Store
+addInFrontend/src/.DS_Store

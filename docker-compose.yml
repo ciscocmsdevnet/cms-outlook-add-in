@@ -11,6 +11,7 @@ services:
       - "9443:9443"
     env_file:
       - ./addInBackend/config.env
+    restart: always
   
   frontend:
     container_name: addInFrontend
@@ -21,6 +22,7 @@ services:
       - "443:443"
     env_file:
       - ./addInFrontend/config.env
+    restart: always
 
   redis:
     container_name: redis
