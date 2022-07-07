@@ -4,7 +4,7 @@ import json
 ## DB Parameters (Do not modify until necessary)
 REDIS_USER='default'
 REDIS_PASS='outlookaddinDB'
-REDIS_HOST="localhost"
+REDIS_HOST="redis"
 REDIS_PORT="6379"
 
 ## App URL Configurations
