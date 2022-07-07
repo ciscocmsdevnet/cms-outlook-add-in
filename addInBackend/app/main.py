@@ -5,15 +5,17 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import uvicorn
-from resource import panelAPI, getmeetingAPI, template
+from resource import panelAPI, getmeetingAPI, template, deleteStored
 import config
-import logging
+import logging as log
+
+log.basicConfig(level="INFO")
 
 app = FastAPI(
     title="CMS Outlook Add-In",
     description="CMS Outlook Add-In Backend Service Fast API",
     version="1.0.0",
-    docs_url=f"{config.URL_PREFIX}/docs",
+    docs_url=f"{config.URL_PREFIX}/internalServiceAddIn/docs",
 )
 
 def configure(app):
@@ -30,7 +32,7 @@ def configure(app):
     
     ## Making Sure connectivity to CMS and Whats used for Instant meetings
     if configure_templates(app.redis_db):
-        logging.warning("Base Configuration Completed")
+        log.info("Base Configuration Completed")
         return app
     else:
         exit()
@@ -39,6 +41,7 @@ def configure(app):
 def configure_routing(app):
     app.include_router(panelAPI.router, prefix=config.URL_PREFIX)
     app.include_router(getmeetingAPI.router, prefix=config.URL_PREFIX)
+    app.include_router(deleteStored.router, prefix=config.URL_PREFIX)
   
 
 
@@ -51,23 +54,26 @@ def configure_db():
         )
 
         ping = client.ping()
-        logging.warning(f"DB PING: {ping}")
+        log.info(f"DB PING: {ping}")
 
         if ping is True:
             return client
-        logging.warning("Redis Cache Not Started")
+        log.warning("Redis Cache Not Started")
 
     except redis.AuthenticationError:
-        logging.warning("AuthenticationError: Redis Cache not started")
+        log.error("AuthenticationError: Redis Cache not started")
 
 def configure_templates(dbconn):
 
     if config.PROVISIONED_COSPACES:
-        logging.warning("Instant Meeting Set to pick user provisioned coSpaces")
+        log.info("Instant Meeting Set to pick user provisioned coSpaces")
     
     if config.SPACE_TEMPLATE:
         if template.extractCoSpaceTemplateinfo(dbconn):
-            logging.warning ("Space Template and Access Methods Found.. Will be used to create spaces if provisioned coSpaces not present")
+            log.info ("Space Template and Access Methods Found.. Will be used to create coSpaces")
+            if template.extractWebBridgeProfiles():
+                log.warning ("Meeitng URL generated")
+                return True
             return True
         else:
             return False
@@ -77,5 +83,4 @@ def configure_templates(dbconn):
 app = configure(app)
 
 # if __name__ == "__main__":
-#     logging.error("WHy")
-#     uvicorn.run("main:app", host="0.0.0.0", port=9443, reload=True, worker=2)
+#     uvicorn.run("main:app", host="0.0.0.0", port=9443, reload=True)

@@ -2,12 +2,15 @@ import requests
 import json
 from fastapi import HTTPException, APIRouter
 from schemas.panel import *
-import logging
+import logging as log
 from requests.exceptions import ConnectionError
 import urllib3
+from os import environ
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-router = APIRouter()
+router = APIRouter(tags=["Panel API"])
+
+log.basicConfig(level="INFO")
 
 @router.post("/login/")
 async def addInLogin(userData: loginPayload):
@@ -28,9 +31,9 @@ async def addInLogin(userData: loginPayload):
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as loginEx:
-      print (f"Exception occured while login: {loginEx}")
+      log.error (f"Exception occured while login: {loginEx}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}, user: {userData.username} ")
+      log.info(f"METHOD: POST, URL: {web_bridge_url}, Response_Status: {response.status_code}, user: {userData.username} ")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 307:
@@ -52,9 +55,9 @@ async def getSpaces(getSpacesInput: getSpacesInput):
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as getSpaceExc:
-      print (f"Exception occured while getting spaces: {getSpaceExc}")
+      log.error (f"Exception occured while getting spaces: {getSpaceExc}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: GET , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 307:
@@ -75,9 +78,9 @@ async def getSpaceAccessMethod(getSpaceAccessMethodInput: getSpaceAccessMethodIn
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as getSpaceAMExc:
-      print (f"Exception occured while getting spaces access methods: {getSpaceAMExc}")
+      log.error (f"Exception occured while getting spaces access methods: {getSpaceAMExc}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: GET , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 400:
@@ -93,7 +96,7 @@ async def getMeetingInformation(getMeetingEmailInvitationInput: getMeetingEmailI
 
     web_bridge_url = f"https://{getMeetingEmailInvitationInput.webBridgeURL}/api/cospaces/{getMeetingEmailInvitationInput.spaceGUID}/accessMethods/{getMeetingEmailInvitationInput.accessMethodGUID}/emailInvitation"
 
-    payload = json.dumps({"language": "en_GB"})
+    payload = json.dumps({"language":f"{environ['INVITATION_LANG']}"})
 
     headers = {'Authorization': f'Bearer {getMeetingEmailInvitationInput.authToken}'}
 
@@ -103,9 +106,9 @@ async def getMeetingInformation(getMeetingEmailInvitationInput: getMeetingEmailI
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as getMeetingLinkExc:
-      print (f"Exception occured while getting meeting Link: {getMeetingLinkExc}")
+      log.error (f"Exception occured while getting meeting Link: {getMeetingLinkExc}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: POST , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 503:
@@ -129,9 +132,9 @@ async def getUserInfo(userData: userInfoPayload):
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as validationEx:
-      print (f"Exception occured while validating Auth token: {validationEx}")
+      log.error (f"Exception occured while validating Auth token: {validationEx}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: GET , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 307:
@@ -153,9 +156,9 @@ async def getUserInfo(userData: createSpaceInputs):
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as validationEx:
-      print (f"Exception occured while validating Auth token: {validationEx}")
+      log.error (f"Exception occured while validating Auth token: {validationEx}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: POST , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 307:
@@ -175,9 +178,9 @@ async def getUserInfo(userData: getSpacesInput):
     except ConnectionError:
       raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
     except Exception as validationEx:
-      print (f"Exception occured while validating Auth token: {validationEx}")
+      log.error (f"Exception occured while validating Auth token: {validationEx}")
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
+      log.info(f"METHOD: GET , URL: {web_bridge_url}, Response_Status: {response.status_code}")
       if response.status_code == 401:
         raise HTTPException(status_code=401, detail="Invalid username/password provided")
       elif response.status_code == 307:
