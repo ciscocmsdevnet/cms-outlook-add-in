@@ -12,7 +12,10 @@ services:
     env_file:
       - ./addInBackend/config.env
     restart: always
-  
+    volumes:
+      - ./certs/certificate.cer:/certs/certificate.cer:ro
+      - ./certs/certificate.key:/certs/certificate.key:ro
+
   frontend:
     container_name: addInFrontend
     build:
@@ -23,6 +26,9 @@ services:
     env_file:
       - ./addInFrontend/config.env
     restart: always
+    volumes:
+      - ./certs/certificate.cer:/etc/nginx/certs/certificate.cer:ro
+      - ./certs/certificate.key:/etc/nginx/certs/certificate.key:ro
 
   redis:
     container_name: redis
