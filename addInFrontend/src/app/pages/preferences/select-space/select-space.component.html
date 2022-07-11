@@ -1,66 +1,49 @@
 <div class="base-margin">
   <form [formGroup]="selectedSpacesForm" (ngSubmit)="savePreferences()">
-      <div class="form-group">
+    <div class="form-group">
+      <div class="form-group__text">
+        <label for="space">Select Space</label>
+        <mat-select *ngIf="(defspaces$ | async)!.length > 0; else loading" type="space" id="space"
+          formControlName="space" (selectionChange)="changeDefSpace()" [(ngModel)]="selectedSpaceGUID" required>
+          <mat-option *ngFor="let dspace of (defspaces$ | async)" [value]="dspace.guid">
+            {{ dspace.name }}
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+
+    <ng-container *ngIf="selectedSpaceGUID != ''">
+      <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
         <div class="form-group__text">
-          <label for="space">Select Space</label>
-          <mat-select
-          *ngIf="(defspaces$ | async)!.length > 0; else loading" 
-          type="space" 
-          id="space"
-          formControlName="space"
-          (selectionChange)="changeDefSpace()"
-          [(ngModel)] = "selectedSpaceGUID"
-          required
-          >
-            <mat-option *ngFor="let dspace of (defspaces$ | async)" [value]="dspace.guid">
-              {{ dspace.name }}
+          <label for="access">Select Access Method</label>
+          <mat-select type="access" id="access" (selectionChange)="changeDefAccess()" formControlName="access"
+            [(ngModel)]="selectedAccessGUID" required>
+            <mat-option *ngFor="let daccess of (defaccess$|async)" [value]="daccess.guid">
+              {{ daccess.uri }}
             </mat-option>
           </mat-select>
         </div>
       </div>
+    </ng-container>
 
-      <ng-container *ngIf="selectedSpaceGUID != ''" >
-        <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
-          <div class="form-group__text">
-            <label for="access">Select Access Method</label>
-            <mat-select 
-            type="access" 
-            id="access" 
-            (selectionChange)="changeDefAccess()"
-            formControlName="access"
-            [(ngModel)] = "selectedAccessGUID"
-            required
-            >
-              <mat-option  *ngFor="let daccess of (defaccess$|async)" [value]="daccess.guid">
-                {{ daccess.uri }}
-              </mat-option >
-            </mat-select>
-          </div>
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col-10">
+        <div class="dbl-margin-top">
+          <button class="btn btn--secondary btn--justified" title="submit" type="submit"
+            [innerText]="'Save My Preference'" [disabled]="!selectedSpacesForm.valid"> </button>
         </div>
-      </ng-container>
-      
-      <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
-          <div class="dbl-margin-top">
-            <button 
-            class="btn btn--secondary btn--justified" 
-            title="submit" 
-            type="submit" 
-            [innerText]="'Save My Preference'" 
-            [disabled]="!selectedSpacesForm.valid"
-            > </button>
-          </div>
-        </div>
-        <div class="col-1"></div>
       </div>
-  </form> 
+      <div class="col-1"></div>
+    </div>
+  </form>
 
   <div class="row base-margin-bottom">
     <div class="col-1"></div>
     <div class="col-10">
       <div class="base-margin-top dbl-margin-bottom">
-        <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'" (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
+        <button class="btn btn--justified btn--success" title="get link" [innerText]="'Get meeting link'"
+          (click)="getMeetinglink()" [disabled]="!(invitation$|async)"> </button>
       </div>
     </div>
     <div class="col-1"></div>
@@ -69,9 +52,9 @@
 
 
 <ng-template #loading>
-    <div class="loading-dots base-margin">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+  <div class="loading-dots base-margin">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
 </ng-template>

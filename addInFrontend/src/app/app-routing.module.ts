@@ -13,23 +13,23 @@ const routes: Routes = [
     path: "",
     component: WelcomeComponent,
   },
-  { 
-    path: 'selectsite', 
+  {
+    path: 'selectsite',
     component: SelectsiteComponent,
   },
-  { 
-    path: 'login', 
+  {
+    path: 'login',
     component: LoginComponent,
   },
-  { 
-    path: 'preferences', 
+  {
+    path: 'preferences',
     component: PreferencesComponent,
     canActivate: [AuthGuard],
-   },
-   {
-     path: 'commands',
-     component: CommandsComponent,
-   }
+  },
+  {
+    path: 'commands',
+    component: CommandsComponent,
+  }
 ];
 
 @NgModule({
