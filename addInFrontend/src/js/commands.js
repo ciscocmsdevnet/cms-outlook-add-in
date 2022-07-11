@@ -145,11 +145,20 @@ async function action(event) {
   } else {
     let username = pickusername();
     let meetingInvitation = await getInstantMeeting(username);
-    parselink(meetingInvitation["invitation"]); 
-    setLocation(meetingInvitation["invitation"]);
-    saveIntitation(meetingInvitation); 
+    if (meetingInvitation['detail']) {
+      var message = {
+        type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
+        message: "Failed to get meeting invitation from CMS.",
+        icon: "Icon.80x80",
+        persistent: true,
+      };
+      Office.context.mailbox.item.notificationMessages.replaceAsync("action", message);
+    } else {
+      parselink(meetingInvitation["invitation"]); 
+      setLocation(meetingInvitation["invitation"]);
+      saveIntitation(meetingInvitation); 
+    }
   }
-  
   // Be sure to indicate when the add-in command function is complete
   event.completed();
 }
