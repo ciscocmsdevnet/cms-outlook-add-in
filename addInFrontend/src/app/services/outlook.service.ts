@@ -11,8 +11,8 @@ export class OutlookService {
   loginusername$: Observable<string> = this.loginusernamesub.asObservable();
 
   constructor(
-    private cmsapiService: CmsapiService, 
-    private errmessageService: ErrmessagesService ) {
+    private cmsapiService: CmsapiService,
+    private errmessageService: ErrmessagesService) {
 
   }
 
@@ -30,12 +30,12 @@ export class OutlookService {
     this.cmsapiService.invitation$.subscribe(
       {
         next: (inv) => {
-          if (inv){
+          if (inv) {
             this.invitation = inv.invitation;
             Office.onReady(() => {
               this.parselink();
               this.setLocation();
-              this.errmessageService.showMesssage("Space created and Meeting Information added.");   
+              this.errmessageService.showMesssage("Space created and Meeting Information added.");
             });
           } else {
             this.errmessageService.showError("Failed to add meeting information.");
@@ -45,13 +45,13 @@ export class OutlookService {
           this.errmessageService.showError("Failed to add meeting information.");
         }
       }
-    )    
+    )
   }
 
 
 
   parselink() {
-   
+
     let meetingInvitation: string = '';
     if (this.invitation == '') {
       meetingInvitation = localStorage.getItem('invitation')!;
@@ -60,43 +60,43 @@ export class OutlookService {
     }
 
     console.log("INVITATION:", meetingInvitation)
-   
+
     var removedSubject = meetingInvitation.replace(/Subject:/g, "");
     var meetingBody = removedSubject.replace(/"/g, "");
     // let meetingBody = removedQuotes.replace(/\\n/g, "<br></div>");
     Office.context.mailbox.item!.body.setSelectedDataAsync(
-        meetingBody,
-        {
-          coercionType: 'text', // Write text as HTML
-        },
-  
-        (asyncResult) => {
-          if (asyncResult.status == Office.AsyncResultStatus.Failed) {
-            const message = {
-              type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-              message: "Failed.",
-              icon: "Icon.80x80",
-              persistent: true,
-            };
-            this.errmessageService.showError("Failed to add meeting information.");
-            Office.context.mailbox.item!.notificationMessages.replaceAsync("action", message);
-          } else {
-            const message = {
-              type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-              message: "Space created and Meeting Information added.",
-              icon: "Icon.80x80",
-              persistent: true,
-            };
-            Office.context.mailbox.item!.notificationMessages.replaceAsync("action", message);
-          }
+      meetingBody,
+      {
+        coercionType: 'text', // Write text as HTML
+      },
+
+      (asyncResult) => {
+        if (asyncResult.status == Office.AsyncResultStatus.Failed) {
+          const message = {
+            type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
+            message: "Failed.",
+            icon: "Icon.80x80",
+            persistent: true,
+          };
+          this.errmessageService.showError("Failed to add meeting information.");
+          Office.context.mailbox.item!.notificationMessages.replaceAsync("action", message);
+        } else {
+          const message = {
+            type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
+            message: "Space created and Meeting Information added.",
+            icon: "Icon.80x80",
+            persistent: true,
+          };
+          Office.context.mailbox.item!.notificationMessages.replaceAsync("action", message);
         }
-      );
+      }
+    );
 
   }
 
 
   setLocation() {
-    
+
     var str: string | null = ''
     const regex = /(https[a-zA-Z0-9:/\.\?=_-]+)/gm;
     if (this.invitation == '') {

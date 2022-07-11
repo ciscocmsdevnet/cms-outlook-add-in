@@ -25,7 +25,7 @@ export class AuthService {
     this.page_navigator()
   }
 
- 
+
 
   private page_navigator() {
     this.check_login()
@@ -33,8 +33,8 @@ export class AuthService {
     if (user.token) {
       this.validate().subscribe(
         {
-          error: ()=>{
-            this.router.navigate(["login", {'webbridge':user.webbridge}])
+          error: () => {
+            this.router.navigate(["login", { 'webbridge': user.webbridge }])
             this.tokenisexpired.next(true)
           },
           complete: () => {
@@ -48,23 +48,23 @@ export class AuthService {
   private validate() {
     const userData = this.usersubject.getValue()
     return this.http
-    .post(
-      this.BACKENDURL+'/validate',
-      {
-        webBridgeURL: userData.webbridge,
-        authToken: userData.token,
-        username: userData.email,
-      },
-    )
-    .pipe(
-      catchError(
-        err => {
-          console.log(err.error.detail);
-          this.errmessagesService.showError("Token has been expired. Please login again.");
-          return throwError(() => {});
-        }
-      ),
-      shareReplay()
+      .post(
+        this.BACKENDURL + '/validate',
+        {
+          webBridgeURL: userData.webbridge,
+          authToken: userData.token,
+          username: userData.email,
+        },
+      )
+      .pipe(
+        catchError(
+          err => {
+            console.log(err.error.detail);
+            this.errmessagesService.showError("Token has been expired. Please login again.");
+            return throwError(() => { });
+          }
+        ),
+        shareReplay()
       )
   }
 
@@ -100,11 +100,11 @@ export class AuthService {
           err => {
             if (err.error.detail) {
               this.errmessagesService.showError(err.error.detail);
-            } 
+            }
             else if (err.message) {
               this.errmessagesService.showError(err.message)
-            }          
-            return throwError(() => {});
+            }
+            return throwError(() => { });
           }
         ),
         tap(resData => {

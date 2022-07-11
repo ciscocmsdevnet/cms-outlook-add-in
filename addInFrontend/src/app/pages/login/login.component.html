@@ -1,5 +1,5 @@
 <div class="base-margin">
-  <form class="form-group" [formGroup]="loginForm"  (ngSubmit)="onLogin()">
+  <form class="form-group" [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <div class="section">
       <h5 class="text-weight-600">Provide your Username/Password</h5>
     </div>
@@ -7,34 +7,26 @@
       <div class="form-group">
         <div class="form-group__text">
           <label for="email">Username:</label>
-          <input 
-          type="email" 
-          id="email" 
-          placeholder="username@domain" 
-          formControlName="email" 
-          />
-        </div>  
+          <input type="email" id="email" placeholder="username@domain" formControlName="email" />
+        </div>
       </div>
       <div class="form-group">
         <div class="form-group__text">
           <label for="password">Password:</label>
-          <input 
-          type="password" 
-          id="password" 
-          formControlName="password" 
-          />
-        </div>  
+          <input type="password" id="password" formControlName="password" />
+        </div>
       </div>
       <div class="section">
         <span class="text-weight-500 text-italic">* we do not store any credentials</span>
       </div>
     </div>
-   
+
     <div class="row">
       <div class="col-1"></div>
       <div class="col-10">
         <div class="dbl-margin-top">
-          <button *ngIf="!isLoading;else loading" class="btn btn--justified" type="submit" [innerText]="'Login'" [disabled]="!loginForm.valid" title="Login"></button>
+          <button *ngIf="!isLoading;else loading" class="btn btn--justified" type="submit" [innerText]="'Login'"
+            [disabled]="!loginForm.valid" title="Login"></button>
         </div>
       </div>
       <div class="col-1"></div>
@@ -42,16 +34,14 @@
 
   </form>
   <div class="row section flex flex-center" *ngIf="(tokenisexpired$ | async) || (error$ | async)">
-      <button class="row btn btn btn--link" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"> </button>
+    <button class="row btn btn btn--link" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"> </button>
   </div>
 </div>
 
 <ng-template #loading>
   <div class="loading-dots">
-      <span></span>
-      <span></span>
-      <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
 </ng-template>
-
-

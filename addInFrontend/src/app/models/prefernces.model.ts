@@ -20,16 +20,16 @@ export interface AccessMethod {
      uri: string
 }
 
-export interface AccessMethodResponse{
+export interface AccessMethodResponse {
      accessMethods: AccessMethod[]
 }
 
-export interface InvitationResponse{
-     invitation: string  
+export interface InvitationResponse {
+     invitation: string
      language: string
 }
 
-export interface NewSpaceResponse{
+export interface NewSpaceResponse {
      guid: string,
      name: string,
      accessMethods: AccessMethod[]

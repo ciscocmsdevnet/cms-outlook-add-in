@@ -14,10 +14,10 @@ import { Router } from '@angular/router';
 export class SelectsiteComponent implements OnInit {
 
   meetinglist$!: Observable<string[]>;
-  webbridgeForm!: FormGroup;  
+  webbridgeForm!: FormGroup;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private cmsapiService: CmsapiService,
     private errmessageService: ErrmessagesService
   ) { }
@@ -30,7 +30,7 @@ export class SelectsiteComponent implements OnInit {
   initForm() {
     this.webbridgeForm = new FormGroup({
       radio: new FormControl('', Validators.required),
-      input: new FormControl({value:'', disabled:true}, Validators.required),
+      input: new FormControl({ value: '', disabled: true }, Validators.required),
     });
   }
 
@@ -54,9 +54,9 @@ export class SelectsiteComponent implements OnInit {
     }
     else {
       selectedwebbridge = this.webbridgeForm.controls['radio'].value
-    }    
-    this.router.navigate(['/login', {"webbridge":selectedwebbridge}]);
-   
+    }
+    this.router.navigate(['/login', { "webbridge": selectedwebbridge }]);
+
   }
 
 }

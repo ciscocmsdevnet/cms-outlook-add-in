@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
-  public user$: Observable<User> | undefined ;
+  public user$: Observable<User> | undefined;
 
   constructor(
     private authService: AuthService,

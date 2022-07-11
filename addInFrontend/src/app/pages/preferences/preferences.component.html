@@ -1,23 +1,11 @@
-
 <div class="base-margin">
-    <app-user-header></app-user-header>
-    <mat-tab-group  mat-stretch-tabs [(selectedIndex)]="tabIndex">
-      <mat-tab label="Select Space">
-        <app-select-space 
-        [cmsapiServce]="cmsapiServce" 
-        ></app-select-space>
-      </mat-tab>
-      <mat-tab label="Create Space">
-        <app-new-space 
-        (switchTabevent)="setTab($event)"  
-        [cmsapiServce]="cmsapiServce" 
-        ></app-new-space>
-      </mat-tab>
-    </mat-tab-group>
+  <app-user-header></app-user-header>
+  <mat-tab-group mat-stretch-tabs [(selectedIndex)]="tabIndex">
+    <mat-tab label="Select Space">
+      <app-select-space [cmsapiServce]="cmsapiServce"></app-select-space>
+    </mat-tab>
+    <mat-tab label="Create Space">
+      <app-new-space (switchTabevent)="setTab($event)" [cmsapiServce]="cmsapiServce"></app-new-space>
+    </mat-tab>
+  </mat-tab-group>
 </div>
-
-
-
-
-
-

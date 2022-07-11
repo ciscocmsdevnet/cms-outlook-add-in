@@ -18,20 +18,20 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   error$!: Observable<string>;
 
-  constructor(private router: Router, 
+  constructor(private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
     private errmessageService: ErrmessagesService,
     private outlookService: OutlookService) {
-    }
+  }
 
   ngOnInit(): void {
     this.initForm()
     this.error$ = this.errmessageService.error$
-    this.outlookService.get_outlook_username()  
+    this.outlookService.get_outlook_username()
     this.outlookService.loginusername$.subscribe(
       {
-        next:(email)=>{
+        next: (email) => {
           this.loginForm.controls['email'].setValue(email)
         }
       }
@@ -41,15 +41,15 @@ export class LoginComponent implements OnInit {
 
   private initForm() {
     this.loginForm = new FormGroup({
-      'email':new FormControl<string>('',[Validators.required, Validators.email]),
-      'password':new FormControl<string>('',[Validators.required])
+      'email': new FormControl<string>('', [Validators.required, Validators.email]),
+      'password': new FormControl<string>('', [Validators.required])
     });
   }
 
-  reset(){
+  reset() {
     this.authService.logout()
   }
- 
+
   onLogin(): void {
     this.isLoading = true;
     this.errmessageService.showError('');
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
           this.isLoading = false;
           this.loginForm.controls['email'].enable();
           this.loginForm.controls['password'].enable();
-        }    
+        }
       }
     );
 

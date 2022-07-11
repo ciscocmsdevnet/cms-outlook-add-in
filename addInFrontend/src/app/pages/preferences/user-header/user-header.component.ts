@@ -11,13 +11,13 @@ import { AuthService } from 'src/app/services/auth.service';
 export class UserHeaderComponent implements OnInit {
 
   currentUser$!: Observable<User>;
-  
+
   constructor(
     private authService: AuthService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
-    this.currentUser$=this.authService.user$
+    this.currentUser$ = this.authService.user$
   }
 
   logout() {

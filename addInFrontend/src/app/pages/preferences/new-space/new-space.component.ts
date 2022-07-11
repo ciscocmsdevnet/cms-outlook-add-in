@@ -14,9 +14,9 @@ export class NewSpaceComponent implements OnInit {
   @Input()
   cmsapiServce!: CmsapiService;
 
-  @Output() 
+  @Output()
   switchTabevent = new EventEmitter<number>();
-  
+
   public spacetemps: SpaceTemplate[] = [];
   public showLoading: boolean = false;
   public validForm: boolean = false;
@@ -32,7 +32,7 @@ export class NewSpaceComponent implements OnInit {
     // get space templates
     this.cmsapiServce.getUserSpaceTemplates().subscribe(
       {
-        next: (temps)=> {
+        next: (temps) => {
           this.spacetemps = temps
         }
       }
@@ -41,36 +41,36 @@ export class NewSpaceComponent implements OnInit {
 
   private initForm() {
     this.createSpaceForm = new FormGroup({
-      'name': new FormControl<string>('', 
-      [
-        Validators.required,
-        Validators.minLength(1)
-        
-      ]),
-      'templates': new FormControl<string>('', 
-      [
-        Validators.required,
-        Validators.minLength(1)
-      ]
+      'name': new FormControl<string>('',
+        [
+          Validators.required,
+          Validators.minLength(1)
+
+        ]),
+      'templates': new FormControl<string>('',
+        [
+          Validators.required,
+          Validators.minLength(1)
+        ]
       ),
     });
   }
 
-  onCreateSpace(){
+  onCreateSpace() {
     this.showLoading = true
     this.cmsapiServce.createSpaceFromTemplate(this.createSpaceForm.controls['name'].value, this.createSpaceForm.controls['templates'].value).subscribe(
       {
-        next: (newspace)=>{
-          this.errmessageService.showMesssage("New space '"+newspace.name+"' has been created!")
+        next: (newspace) => {
+          this.errmessageService.showMesssage("New space '" + newspace.name + "' has been created!")
           this.createSpaceForm.controls['name'].setValue('')
           this.createSpaceForm.controls['templates'].setValue('')
-          this.showLoading = false
-          this.switchTabevent.emit(0)
           this.cmsapiServce.getUserSpaces().subscribe(
             {
               next: () => {
+                this.showLoading = false
                 this.selectedSpaceService.setSelectedSpaceid(newspace.guid)
                 this.selectedSpaceService.setSelectedAccessid('')
+                this.switchTabevent.emit(0)
               }
             }
           )

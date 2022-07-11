@@ -21,7 +21,7 @@ export class SelectSpaceComponent implements OnInit {
   public selectedAccessGUID: string = '';
   public selectedSpacesForm!: FormGroup;
 
-  
+
   private userPreferences: Preferences = { 'defaultspaceGUID': this.selectedSpaceGUID, 'defaultaccessmethodGUID': this.selectedAccessGUID };
 
   // Observables
@@ -32,7 +32,7 @@ export class SelectSpaceComponent implements OnInit {
   private userpref$: Observable<Preferences | null> | undefined;
   private selectedspaceid$: Observable<string> | undefined;
   private selectedaccessid$: Observable<string> | undefined;
-  
+
   constructor(
     private outlookService: OutlookService,
     private errmessageService: ErrmessagesService,
@@ -48,7 +48,7 @@ export class SelectSpaceComponent implements OnInit {
     this.initForm()
     this.getStoredPreferences()
     this.cmsapiServce.getUserSpaces().subscribe();
-    
+
     this.selectedspaceid$.subscribe(
       {
         next: (spaceid) => {
@@ -56,29 +56,30 @@ export class SelectSpaceComponent implements OnInit {
         }
       }
     )
-    
+
     this.selectedaccessid$.subscribe(
       {
         next: (accessid) => {
           this.newAccessIdAction(accessid)
-        } 
+        }
       }
     )
 
   }
+  
   private initForm() {
     this.selectedSpacesForm = new FormGroup({
-      'space': new FormControl<string>('', 
-      [
-        Validators.required,
-        Validators.minLength(1)
-        
-      ]),
-      'access': new FormControl<string>('', 
-      [
-        Validators.required,
-        Validators.minLength(1)
-      ]
+      'space': new FormControl<string>('',
+        [
+          Validators.required,
+          Validators.minLength(1)
+
+        ]),
+      'access': new FormControl<string>('',
+        [
+          Validators.required,
+          Validators.minLength(1)
+        ]
       ),
     });
   }
@@ -112,7 +113,7 @@ export class SelectSpaceComponent implements OnInit {
 
   private newAccessIdAction(accessid: string) {
     this.selectedAccessGUID = accessid
-    if (accessid == ""){
+    if (accessid == "") {
       this.cmsapiServce.clearInvitationSubj()
     } else {
       this.cmsapiServce.getMeetingInformation(this.selectedSpaceGUID, this.selectedAccessGUID).subscribe()
@@ -131,7 +132,7 @@ export class SelectSpaceComponent implements OnInit {
             this.selectedSpaceGUID = userpref.defaultspaceGUID;
             this.selectedAccessGUID = userpref.defaultaccessmethodGUID;
             this.cmsapiServce.getCurrentInvitation()
-          } 
+          }
         }
       }
     )
