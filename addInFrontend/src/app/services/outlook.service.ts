@@ -32,17 +32,20 @@ export class OutlookService {
         next: (inv) => {
           if (inv){
             this.invitation = inv.invitation;
+            Office.onReady(() => {
+              this.parselink();
+              this.setLocation();
+              this.errmessageService.showMesssage("Space created and Meeting Information added.");   
+            });
+          } else {
+            this.errmessageService.showError("Failed to add meeting information.");
           }
+        },
+        error: () => {
+          this.errmessageService.showError("Failed to add meeting information.");
         }
       }
-    )
-
-    Office.onReady(() => {
-      this.parselink();
-      this.setLocation();
-      this.errmessageService.showMesssage("Space created and Meeting Information added.");   
-    });
-    
+    )    
   }
 
 
