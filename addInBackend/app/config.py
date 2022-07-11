@@ -33,6 +33,7 @@ try:
   PROVISIONED_COSPACES=bool(int(os.environ.get("PROVISIONED_COSPACES")))
   CALL_ID_PREFIX=os.environ.get("CALL_ID_PREFIX")
   INSTANT_MEETING_WEB_BRIDGE=os.environ.get("INSTANT_MEETING_WEB_BRIDGE")
+  INVITATION_LANG=os.environ.get("INVITATION_LANG")
 
 except Exception as envException:
   print(f"Not able to read environment variables: {envException}")

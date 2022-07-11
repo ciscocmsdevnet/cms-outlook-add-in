@@ -68,7 +68,7 @@ def getEmailInvitationFromSpaceID(coSpaceId,instant=False):
       else:
         accessMethodID = json_response["accessMethods"]["accessMethod"]["@id"]
 
-      meetingDetailURL=f"{config.WEB_ADMIN}/api/v1/coSpaces/{coSpaceId}/accessMethods/{accessMethodID}/emailInvitation?language={environ['INVITATION_LANG']}"
+      meetingDetailURL=f"{config.WEB_ADMIN}/api/v1/coSpaces/{coSpaceId}/accessMethods/{accessMethodID}/emailInvitation?language={config.INVITATION_LANG}"
       try:
         response = requests.request("GET", meetingDetailURL, auth=admin_auth,verify=False)
       except ConnectionError:
@@ -140,14 +140,13 @@ def getMeetingInformationFromProvisionedCoSpace(jid,id,dbObject):
       emailInvitationResponse = getEmailInvitationFromSpaceID (coSpaceID)
       
       if "emailInvitation" in emailInvitationResponse[0].keys():
+
         payload = {
-              "subject": emailInvitationResponse[0]["emailInvitation"]["subject"],
-              "details": emailInvitationResponse[0]["emailInvitation"]["invitation"]
-            }
-        responseMeetingInfo = {
-          "username": jid,
-          "meetingInfo": payload
-        }
+                      "invitation": f"{emailInvitationResponse[0]['emailInvitation']['subject']}\n\n\n{emailInvitationResponse[0]['emailInvitation']['invitation']}",
+                      "language" : f"{config.INVITATION_LANG}",
+                      "type": "text/plain"
+                      }
+        
         dbpayload = copy(payload)
         dbpayload['coSpaceID'] = coSpaceID
         ## Store in DB
@@ -156,7 +155,7 @@ def getMeetingInformationFromProvisionedCoSpace(jid,id,dbObject):
         except Exception as dbInsertExp:
           log.error(f"Cannot Store Meeting Info in DB:{dbInsertExp}")
           pass
-        return JSONResponse(content=responseMeetingInfo, status_code=200)
+        return JSONResponse(content=payload, status_code=200)
       else:
         log.error("Error in fetching Email invitation")
         raise HTTPException(status_code=500, detail="Internal Error")
@@ -206,7 +205,7 @@ def createMeetingSpaceForUser(cjid,cdbObject):
       pass
     else:
       if spaceTemplateInfo: ## ie record exist
-        log.info(f"Record present in DB, fetched from there")
+        log.info(f"Space template found in DB..Creating space")
       else:
         spaceTemplateInfo = extractCoSpaceTemplateinfo(cdbObject)
     
@@ -214,7 +213,7 @@ def createMeetingSpaceForUser(cjid,cdbObject):
     foundSpaceId = findSpaceIfExist(spaceName=f"{cjid.split('@')[0]}_Meeting_Space")
     
     if foundSpaceId:
-      log.info(f"Space found. Fetching details..{foundSpaceId}")
+      log.info(f"Space found.. Fetching details..{foundSpaceId}")
       emailInvitationResponse = getEmailInvitationFromSpaceID (foundSpaceId,instant=True)
       
       if "emailInvitation" in emailInvitationResponse[0].keys():
@@ -222,14 +221,21 @@ def createMeetingSpaceForUser(cjid,cdbObject):
         generatedLink = f"{config.meetingLink}/{emailInvitationResponse[1]['accessMethod']['callId']}?secret={emailInvitationResponse[1]['accessMethod']['secret']}"
         modifiedMeetinLinkInformation = emailInvitationResponse[0]["emailInvitation"]["invitation"].replace('\n',f'\nJoin Link: {generatedLink}\n',1)
 
-        payload = {
-              "subject": emailInvitationResponse[0]["emailInvitation"]["subject"],
-              "details": modifiedMeetinLinkInformation
-            }
-        responseMeetingInfo = {
-          "username": cjid,
-          "meetingInfo": payload
+        ## Creating meeting payload following schema:
+        """
+        {
+          "invitation": "Subject: \n\n\nDetails",
+          "language" : "en_GB",
+          "type": "text/plain"
         }
+        """
+
+        payload = {
+            "invitation": f"{ emailInvitationResponse[0]['emailInvitation']['subject']}\n\n\n{modifiedMeetinLinkInformation}",
+            "language" : f"{config.INVITATION_LANG}",
+            "type": "text/plain"
+            }
+
         dbpayload = copy(payload)
         dbpayload['coSpaceID'] = foundSpaceId
         ## Store in DB
@@ -238,13 +244,13 @@ def createMeetingSpaceForUser(cjid,cdbObject):
         except Exception as dbInsertExp:
           log.error(f"Cannot Store Meeting Info in DB:{dbInsertExp}")
           pass
-        return JSONResponse(content=responseMeetingInfo, status_code=200)
+        return JSONResponse(content=payload, status_code=200)
       else:
         log.error("Cannot Fetch already created Space")
         raise HTTPException(status_code=500, detail="Internal Error")
     
     else:
-      log.info(f"METHOD: ,No Space found.Creating New Space..")
+      log.info(f"No Space found..Creating New Space..")
       ## Create new space with parameters from template
       if spaceTemplateInfo:
         if type(spaceTemplateInfo) == str:
@@ -348,7 +354,7 @@ def createMeetingSpaceForUser(cjid,cdbObject):
 
           ## Get meeting Information
           if newCoSpaceAccessMethodID:
-            meetingDetailURL=f"{config.WEB_ADMIN}/api/v1/coSpaces/{newCoSpaceID}/accessMethods/{newCoSpaceAccessMethodID}/emailInvitation?language={environ['INVITATION_LANG']}"
+            meetingDetailURL=f"{config.WEB_ADMIN}/api/v1/coSpaces/{newCoSpaceID}/accessMethods/{newCoSpaceAccessMethodID}/emailInvitation?language={config.INVITATION_LANG}"
 
             try:
               response = requests.request("GET", meetingDetailURL, auth=admin_auth,verify=False)
@@ -390,13 +396,11 @@ def createMeetingSpaceForUser(cjid,cdbObject):
                 modifiedMeetinLinkInformation =json_response["emailInvitation"]["invitation"].replace('\n',f'\nJoin Link: {generatedLink}\n',1)
 
                 payload = {
-                  "subject": json_response["emailInvitation"]["subject"],
-                  "details": modifiedMeetinLinkInformation
-                }
-                responseMeetingInfo = {
-                  "username": cjid,
-                  "meetingInfo": payload
-                }
+                      "invitation": f"{json_response['emailInvitation']['subject']}\n\n\n{modifiedMeetinLinkInformation}",
+                      "language" : f"{config.INVITATION_LANG}",
+                      "type": "text/plain"
+                      }
+
                 dbpayload = copy(payload)
                 dbpayload['coSpaceID'] = newCoSpaceID
                 ## Store in DB
@@ -405,7 +409,7 @@ def createMeetingSpaceForUser(cjid,cdbObject):
                 except Exception as dbInsertExp:
                   log.error(f"Cannot Store Meeting Info in DB:{dbInsertExp}")
                   pass
-                return JSONResponse(content=responseMeetingInfo, status_code=200)
+                return JSONResponse(content=payload, status_code=200)
       else:
         raise HTTPException(status_code=500, detail="No coSpace template found in configs...")
 

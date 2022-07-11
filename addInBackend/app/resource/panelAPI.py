@@ -5,7 +5,7 @@ from schemas.panel import *
 import logging as log
 from requests.exceptions import ConnectionError
 import urllib3
-from os import environ
+import config
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 router = APIRouter(tags=["Panel API"])
@@ -96,7 +96,7 @@ async def getMeetingInformation(getMeetingEmailInvitationInput: getMeetingEmailI
 
     web_bridge_url = f"https://{getMeetingEmailInvitationInput.webBridgeURL}/api/cospaces/{getMeetingEmailInvitationInput.spaceGUID}/accessMethods/{getMeetingEmailInvitationInput.accessMethodGUID}/emailInvitation"
 
-    payload = json.dumps({"language":f"{environ['INVITATION_LANG']}"})
+    payload = json.dumps({"language":f"{config.INVITATION_LANG}"})
 
     headers = {'Authorization': f'Bearer {getMeetingEmailInvitationInput.authToken}'}
 
