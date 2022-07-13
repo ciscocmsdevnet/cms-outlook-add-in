@@ -7,14 +7,11 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - redis
-    ports:
-      - "9443:9443"
+    expose:
+      - "9443"
     env_file:
       - ./addInBackend/config.env
     restart: always
-    volumes:
-      - ./certs/certificate.cer:/certs/certificate.cer:ro
-      - ./certs/certificate.key:/certs/certificate.key:ro
 
   frontend:
     container_name: addInFrontend
@@ -23,6 +20,8 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "443:443"
+    depends_on:
+      - backend
     env_file:
       - ./addInFrontend/config.env
     restart: always
