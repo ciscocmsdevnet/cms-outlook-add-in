@@ -35,7 +35,7 @@ export class OutlookService {
             Office.onReady(() => {
               this.parselink();
               this.setLocation();
-              this.errmessageService.showMesssage("Space created and Meeting Information added.");
+              this.errmessageService.showMesssage("Meeting Information added.");
             });
           } else {
             this.errmessageService.showError("Failed to add meeting information.");
@@ -83,7 +83,7 @@ export class OutlookService {
         } else {
           const message = {
             type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-            message: "Space created and Meeting Information added.",
+            message: "Meeting Information added.",
             icon: "Icon.80x80",
             persistent: true,
           };

@@ -98,7 +98,7 @@ Dial sip:rd@alphauk.cisco.com
 // Set the location of the item that the user is composing.
 function setLocation(invitation) {
 
-  const regex = /(https[a-zA-Z0-9:/\.\?=]+)/gm;
+  const regex = /(https[a-zA-Z0-9:/\.\?=_-]+)/gm;
   let m;
   var meetingLink;
 
