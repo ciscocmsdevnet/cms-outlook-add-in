@@ -49,7 +49,7 @@ async def getInstantMeetingLink(request: Request,
       log.info(f"Record present in DB, fetched from DB")
       meetingInfoJson = json.loads(meetingInfo)
       meetingInfoJson.pop('coSpaceID')
-      return JSONResponse(content={"invitation":meetingInfoJson["subject"] + "\n\n\n" + meetingInfoJson["details"]}, status_code=200)
+      return JSONResponse(content=meetingInfoJson, status_code=200)
     else:
       meetingInformation = getUserMeetingInformation(userjid=jidMappedUserID, dbObject=request.app.redis_db)
       return meetingInformation
