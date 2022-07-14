@@ -1,0 +1,46 @@
+version: '3'
+services:
+  backend:
+    container_name: addInBackend
+    image: cmsoutlookaddin_backend:latest
+    depends_on:
+      - redis
+    expose:
+      - "9443"
+    env_file:
+      - ./backend-config.env
+    restart: always
+
+  frontend:
+    container_name: addInFrontend
+    image: cmsoutlookaddin_frontend:latest
+    ports:
+      - "443:443"
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend-config.env
+    restart: always
+    volumes:
+      - ./certs/certificate.cer:/etc/nginx/certs/certificate.cer:ro
+      - ./certs/certificate.key:/etc/nginx/certs/certificate.key:ro
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    environment:
+      REDIS_PASSWORD: outlookaddinDB
+    volumes:
+      - redis-db-data:/data
+    expose:
+      - "6379"
+    restart: always
+  # redisInsight:
+  #   container_name: redisInsight
+  #   image: redislabs/redisinsight
+  #   ports:
+  #     - "8001:8001"
+  #   restart: always
+
+volumes:
+  redis-db-data:

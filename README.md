@@ -13,11 +13,12 @@ Let's dive 🐬 in...
     - [Middleware Setup](#middleware-setup)
     - [Add-In Support](#add-in-support)
     - [Add-In Config Parameters](#add-in-config-parameters)
-  - [Deployment Steps](#deployment-steps)
+  - [Deployment Steps [Online]](#deployment-steps-online)
     - [Stage 1: Generate Certificates](#stage-1-generate-certificates)
     - [Stage 2: Deploy Middleware](#stage-2-deploy-middleware)
     - [Stage 3: Modify Outlook Manifest files](#stage-3-modify-outlook-manifest-files)
     - [Stage 4: Add Add-In to Outlook Clients](#stage-4-add-add-in-to-outlook-clients)
+  - [Deployment Steps [Offline]](#deployment-steps-offline)
   - [Known issues](#known-issues)
   - [Getting help](#getting-help)
   - [Getting involved](#getting-involved)
@@ -117,7 +118,7 @@ BACKEND_URL=https://<middleware hostname>/addin/v1
 BACKEND_URL=https://middleware.cisco.com/addin/v1
 ```
 
-## Deployment Steps
+## Deployment Steps [Online]
 
 ### Stage 1: Generate Certificates
 
@@ -159,6 +160,21 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
 	
 1. Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
 
+
+## Deployment Steps [Offline]
+
+- For deployments with no internet access to create images, follow below steps:
+
+1. Download the images from folder: `cisco.box.com`. Reach out to `cmsdevelopers@cisco.com` if you do not have access
+2. Load the images: `docker load --input cmsschedular.tar`
+3. create a file `backend-config.env` and copy backend mentioned in [Add-In Config Parameters](#add-in-config-parameters). Please use values relevant to your environment
+4. create file `frontend-config.env` and copy frontend configs mentioned [Add-In Config Parameters](#add-in-config-parameters).Please use values relevant to your environment
+5. Follow [Stage 1: Generate Certificates](#stage-1-generate-certificates) steps
+6. Lets run the service:
+   1. `docker-compose up -d`
+   2. Make sure all containers are up by : `docker-compose ps`
+
+![image](https://user-images.githubusercontent.com/40081345/179026855-879b7a5c-c1f5-48ca-adbd-bbbb7a7ae8ee.png")
 
 ## Known issues
 
