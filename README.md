@@ -14,11 +14,14 @@ Let's dive 🐬 in...
     - [Add-In Support](#add-in-support)
     - [Add-In Config Parameters](#add-in-config-parameters)
   - [Deployment Steps](#deployment-steps)
+    - [Stage 1: Generate Certificates](#stage-1-generate-certificates)
+    - [Stage 2: Deploy Middleware](#stage-2-deploy-middleware)
+    - [Stage 3: Modify Outlook Manifest files](#stage-3-modify-outlook-manifest-files)
+    - [Stage 4: Add Add-In to Outlook Clients](#stage-4-add-add-in-to-outlook-clients)
   - [Known issues](#known-issues)
   - [Getting help](#getting-help)
   - [Getting involved](#getting-involved)
   - [Credits](#credits)
-  - [1. Evgenii Fedotov (evfedoto@cisco.com)](#1-evgenii-fedotov-evfedotociscocom)
   
 
 ## Disclaimer: 
@@ -116,63 +119,63 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
 
 ## Deployment Steps
 
-Stage 1: GENERATE CERTIFICATES
+### Stage 1: Generate Certificates
 
 1. Get a hostname for your middleware service, eg: cmsscheduler.abc.com
-2. Add DNS entry for this hostname in your DNS server or your system's  `/etc/host` file
+2. Add DNS entry for this hostname in your DNS server OR your system's  `/etc/host` file
 3. Login to your linux machine and follow below steps:
    1. Clone this repository: `git clone https://github.com/ciscocmsdevnet/cms-outlook-add-in.git`
    2. Create a folder `certs` in this git repo: `mkdir certs`
    3. Generate certificate in this `certs` folder:
       1. Generate a CSR: `sudo openssl req -new -newkey rsa:2048 -nodes -keyout certificate.key -out certificate.csr`
       2. Specify necessary details required for the certificate (Country, State, hostname etc). Below snippet is just for reference [Snapshot 1]
-      3. You would get key file and csr file in this `certs` folder: certificate.key and certificate.csr
+      3. You would get key file and csr file in this `certs` folder: `certificate.key` and `certificate.csr`
       4. Get the CSR signed by you internal CA and copy it under same folder. 
 
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
 ![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
 
-Stage 2: DEPLOY MIDDLEWARE
+### Stage 2: Deploy Middleware
 
-**You can choose to create docker image from the code base directly or use the images provided in the code base**. Below steps cover on "How to use images provided in this code base"
-1. Login to same linux server and go to repo folder
-2. Create backend Image: `docker build -f ./addInBackend/Dockerfile -t addinfastapi ./addInBackend`
-3. Create frontend Image: `docker build -f ./addInFrontend/Dockerfile -t cmsschedulerweb ./addInFrontend`
-4. Lets run the service:
-   1. docker run -d -p 9443:9443 --name addinfastapi --rm -v <certs directory path>:/certs/ addinfastapi
-   2. docker run -d -p 443:443 --name cmsschedulerweb --rm -v <certs directory path>:/etc/nginx/certs/ cmsschedulerweb
-		* You can run  `pwd` to get your certs directory path
-	
-Stage 3: MODIFY MANIFEST FILE/CORS FILES
-	
-1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
-2. Update `environment.ts`, `environment.prod.ts` files under `addInFrontent/src/environments` with middleware hostname. Set `backendurl` with your middleware hostname (as defined in Stage 1)
-3. Update backend `main.py` origin list with middleware hostname.Replace `<Hostname>` with your middleware hostname (as defined in Stage 1)
+**You need to create docker images from the code base directly**. B
+1. Login to same linux server and go to repository folder
+2. Issue command: `docker-compose build`. This command will create new docker images
+3. Modify `config.env` in addInBackend folder. Refer [Add-In Config Parameters](#add-in-config-parameters) section
+4. Modify `config.env` in addInFrontend folder. Refer [Add-In Config Parameters](#add-in-config-parameters) section
+5. Lets run the service:
+   1. `docker-compose up -d`
+   2. Make sure all containers are up by : `docker-compose ps`
 
-Stage 4: Add Add-In to Outlook Clients
+![image](https://user-images.githubusercontent.com/40081345/179026855-879b7a5c-c1f5-48ca-adbd-bbbb7a7ae8ee.png")
+
 	
-2. Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
+### Stage 3: Modify Outlook Manifest files
+	
+1. Update manifest file with your middleware hostname. In the repository refer `manifest_reference.xml`. Replace `[Hostname]` with your middleware hostname
+
+
+### Stage 4: Add Add-In to Outlook Clients
+	
+1. Add this Add-in using this manifest file in your outlook client. Refer this link on how to add Add-in through file.(https://docs.microsoft.com/en-us/office/dev/add-ins/outlook/sideload-outlook-add-ins-for-testing?tabs=windows)
 
 
 ## Known issues
 
-- These docker images are not tested in a scaled deployment or stress tested to understand the performance
+- This solution is not scale tested or stress tested to understand the performance.
   
 ## Getting help
 
-In case of any questions around Add-in, reach out to `sakhanej@cisco.com`
+- In case of any questions around Add-in, reach out to `cmsdevelopers@cisco.com`
 
 ## Getting involved
 
-Key areas we are currently focusing on:
-  - trying to get feedback on features
-  - fixing certain bugs.
-  - Building for a use case to replace TMS scheduling capabilties
-
-General instructions on _how_ to contribute should be stated with a link to [CONTRIBUTING](./CONTRIBUTING.md) file.
+- General instructions on _how_ to contribute should be stated with a link to [CONTRIBUTING](./CONTRIBUTING.md) file.
+- Do drop us a note on `cmsdevelopers@cisco.com` for any feature request, we would also love ❤️ to merge your code in main branch
 
 ## Credits
 
-1. Evgenii Fedotov (evfedoto@cisco.com)
+1. Evgenii Fedotov
+2. Saurabh Khaneja
+   
 ----
