@@ -93,7 +93,7 @@ export class SelectSpaceComponent implements OnInit {
     this.userPreferences.defaultspaceGUID = this.selectedSpaceGUID
     this.userPreferences.defaultaccessmethodGUID = this.selectedAccessGUID
     this.cmsapiServce.savepreferences(this.userPreferences)
-    this.errmessageService.showMesssage('Preferences saved!');
+    this.errmessageService.showMesssage('Preferences Saved, this space will be used as your instant meeting room.');
   }
 
   changeDefSpace() {
