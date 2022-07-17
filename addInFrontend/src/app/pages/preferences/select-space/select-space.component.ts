@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AccessMethod, InvitationResponse, Preferences, Space } from 'src/app/models/prefernces.model';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
@@ -17,18 +17,18 @@ export class SelectSpaceComponent implements OnInit {
   cmsapiServce!: CmsapiService;
 
   public tabIndex = 0;
-  public selectedSpaceGUID: string = '';
-  public selectedAccessGUID: string = '';
-  public selectedSpacesForm!: FormGroup;
+  public selectedSpaceGUID: boolean = false;
+  private userPreferences: Preferences = { 'defaultspaceGUID': '', 'defaultaccessmethodGUID': ''};
 
-
-  private userPreferences: Preferences = { 'defaultspaceGUID': this.selectedSpaceGUID, 'defaultaccessmethodGUID': this.selectedAccessGUID };
+  selectedSpacesForm = this.fb.group({
+    space: ['', Validators.required],
+    access: ['', Validators.required]
+  });
 
   // Observables
   defspaces$: Observable<Space[]> | undefined;
   defaccess$: Observable<AccessMethod[]> | undefined;
   invitation$: Observable<InvitationResponse | null> | undefined;
-
   private userpref$: Observable<Preferences | null> | undefined;
   private selectedspaceid$: Observable<string> | undefined;
   private selectedaccessid$: Observable<string> | undefined;
@@ -36,7 +36,8 @@ export class SelectSpaceComponent implements OnInit {
   constructor(
     private outlookService: OutlookService,
     private errmessageService: ErrmessagesService,
-    private selectedSpaceService: SelectedSpaceService
+    private selectedSpaceService: SelectedSpaceService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +46,6 @@ export class SelectSpaceComponent implements OnInit {
     this.invitation$ = this.cmsapiServce.invitation$;
     this.selectedspaceid$ = this.selectedSpaceService.selectedspaceid$
     this.selectedaccessid$ = this.selectedSpaceService.selectedaccessid$
-    this.initForm()
     this.getStoredPreferences()
     this.cmsapiServce.getUserSpaces().subscribe();
 
@@ -53,6 +53,11 @@ export class SelectSpaceComponent implements OnInit {
       {
         next: (spaceid) => {
           this.newSpaceIdAction(spaceid)
+          if (spaceid == '') {
+            this.selectedSpaceGUID = false
+          } else {
+            this.selectedSpaceGUID = true
+          }
         }
       }
     )
@@ -66,23 +71,6 @@ export class SelectSpaceComponent implements OnInit {
     )
 
   }
-  
-  private initForm() {
-    this.selectedSpacesForm = new FormGroup({
-      'space': new FormControl<string>('',
-        [
-          Validators.required,
-          Validators.minLength(1)
-
-        ]),
-      'access': new FormControl<string>('',
-        [
-          Validators.required,
-          Validators.minLength(1)
-        ]
-      ),
-    });
-  }
 
   getMeetinglink() {
     this.errmessageService.showMesssage('');
@@ -90,33 +78,35 @@ export class SelectSpaceComponent implements OnInit {
   }
 
   savePreferences() {
-    this.userPreferences.defaultspaceGUID = this.selectedSpaceGUID
-    this.userPreferences.defaultaccessmethodGUID = this.selectedAccessGUID
+    this.userPreferences.defaultspaceGUID = this.selectedSpacesForm.controls.space.value!
+    this.userPreferences.defaultaccessmethodGUID = this.selectedSpacesForm.controls.access.value!
     this.cmsapiServce.savepreferences(this.userPreferences)
     this.errmessageService.showMesssage('Preferences Saved, this space will be used as your instant meeting room.');
   }
 
   changeDefSpace() {
-    this.selectedSpaceService.setSelectedSpaceid(this.selectedSpaceGUID)
-    this.selectedSpaceService.setSelectedAccessid(this.selectedAccessGUID)
+    this.selectedSpaceService.setSelectedSpaceid(this.selectedSpacesForm.controls.space.value!)
+    this.selectedSpaceService.setSelectedAccessid('')
   }
 
   changeDefAccess() {
-    this.selectedSpaceService.setSelectedAccessid(this.selectedAccessGUID)
+    this.selectedSpaceService.setSelectedAccessid(this.selectedSpacesForm.controls.access.value!)
   }
 
   private newSpaceIdAction(spaceid: string) {
-    this.selectedAccessGUID = '';
-    this.selectedSpaceGUID = spaceid
-    this.cmsapiServce.getSpaceAccessMethods(this.selectedSpaceGUID).subscribe()
+    this.selectedSpacesForm.controls.access.setValue("")
+    this.selectedSpacesForm.controls.space.setValue(spaceid)
+    if (spaceid != "") {
+      this.cmsapiServce.getSpaceAccessMethods(spaceid).subscribe()
+    }
   }
 
   private newAccessIdAction(accessid: string) {
-    this.selectedAccessGUID = accessid
-    if (accessid == "") {
+    this.selectedSpacesForm.controls.access.setValue(accessid)
+    if (accessid == '') {
       this.cmsapiServce.clearInvitationSubj()
     } else {
-      this.cmsapiServce.getMeetingInformation(this.selectedSpaceGUID, this.selectedAccessGUID).subscribe()
+      this.cmsapiServce.getMeetingInformation(this.selectedSpacesForm.controls.space.value!, accessid).subscribe()
     }
   }
 
@@ -129,8 +119,8 @@ export class SelectSpaceComponent implements OnInit {
             this.userPreferences = userpref;
             this.selectedSpaceService.setSelectedSpaceid(userpref.defaultspaceGUID)
             this.selectedSpaceService.setSelectedAccessid(userpref.defaultaccessmethodGUID)
-            this.selectedSpaceGUID = userpref.defaultspaceGUID;
-            this.selectedAccessGUID = userpref.defaultaccessmethodGUID;
+            this.selectedSpacesForm.controls.space.setValue(userpref.defaultspaceGUID)
+            this.selectedSpacesForm.controls.access.setValue(userpref.defaultaccessmethodGUID)
             this.cmsapiServce.getCurrentInvitation()
           }
         }
