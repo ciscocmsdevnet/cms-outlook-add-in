@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CmsapiService } from 'src/app/services/cmsapi.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
 import { Router } from '@angular/router';
 
@@ -14,31 +14,30 @@ import { Router } from '@angular/router';
 export class SelectsiteComponent implements OnInit {
 
   meetinglist$!: Observable<string[]>;
-  webbridgeForm!: FormGroup;
+  webbridgeForm = this.fb.group({
+    radio: ['', Validators.required],
+    input: ['', Validators.required],
+  });
+
 
   constructor(
     private router: Router,
     private cmsapiService: CmsapiService,
-    private errmessageService: ErrmessagesService
+    private errmessageService: ErrmessagesService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit(): void {
     this.meetinglist$ = this.cmsapiService.getPredefinedSites()
-    this.initForm()
+    this.webbridgeForm.controls.input.disable()
   }
 
-  initForm() {
-    this.webbridgeForm = new FormGroup({
-      radio: new FormControl('', Validators.required),
-      input: new FormControl({ value: '', disabled: true }, Validators.required),
-    });
-  }
 
   changeSelection() {
-    if (this.webbridgeForm.controls['radio'].value == "Enter your own site") {
-      this.webbridgeForm.controls['input'].enable()
+    if (this.webbridgeForm.controls.radio.value == "Enter your own site") {
+      this.webbridgeForm.controls.input.enable()
     } else {
-      this.webbridgeForm.controls['input'].disable()
+      this.webbridgeForm.controls.input.disable()
     }
   }
 
@@ -49,11 +48,11 @@ export class SelectsiteComponent implements OnInit {
       this.errmessageService.showError('Please fill the form');
       return;
     }
-    if (this.webbridgeForm.controls['input'].enabled) {
-      selectedwebbridge = this.webbridgeForm.controls['input'].value
+    if (this.webbridgeForm.controls.input.enabled) {
+      selectedwebbridge = this.webbridgeForm.controls.input.value!
     }
     else {
-      selectedwebbridge = this.webbridgeForm.controls['radio'].value
+      selectedwebbridge = this.webbridgeForm.controls.radio.value!
     }
     this.router.navigate(['/login', { "webbridge": selectedwebbridge }]);
 

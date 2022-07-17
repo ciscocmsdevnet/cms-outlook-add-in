@@ -3,8 +3,7 @@
     <div class="form-group">
       <div class="form-group__text">
         <label for="space">Select Space</label>
-        <mat-select *ngIf="(defspaces$ | async)!.length > 0; else loading" type="space" id="space"
-          formControlName="space" (selectionChange)="changeDefSpace()" [(ngModel)]="selectedSpaceGUID" required>
+        <mat-select *ngIf="(defspaces$ | async)!.length > 0; else loading" type="space" id="space" formControlName="space" (selectionChange)="changeDefSpace()" required>
           <mat-option *ngFor="let dspace of (defspaces$ | async)" [value]="dspace.guid">
             {{ dspace.name }}
           </mat-option>
@@ -12,12 +11,11 @@
       </div>
     </div>
 
-    <ng-container *ngIf="selectedSpaceGUID != ''">
+    <ng-container *ngIf="selectedSpaceGUID">
       <div class="form-group" *ngIf="((defaccess$ | async)!.length > 0); else loading">
         <div class="form-group__text">
           <label for="access">Select Access Method</label>
-          <mat-select type="access" id="access" (selectionChange)="changeDefAccess()" formControlName="access"
-            [(ngModel)]="selectedAccessGUID" required>
+          <mat-select type="access" id="access" (selectionChange)="changeDefAccess()" formControlName="access" required>
             <mat-option *ngFor="let daccess of (defaccess$|async)" [value]="daccess.guid">
               {{ daccess.uri }}
             </mat-option>
