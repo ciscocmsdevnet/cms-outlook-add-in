@@ -50,21 +50,27 @@ export class NewSpaceComponent implements OnInit {
         {
           next: (newspace) => {
             this.errmessageService.showMesssage("New space '" + newspace.name + "' has been created!")
-            this.createSpaceForm.controls.name.setValue('')
-            this.createSpaceForm.controls.templates.setValue('')
-            this.cmsapiServce.getUserSpaces().subscribe(
-              {
-                next: () => {
-                  this.showLoading = false
-                  this.selectedSpaceService.setSelectedSpaceid(newspace.guid)
-                  this.selectedSpaceService.setSelectedAccessid('')
-                },
-                complete: () => {
-                  this.switchTabevent.emit(0)
-                }
-                
-              }
-            )
+            // give time to CMS to create/update coSpaces DB.
+            setTimeout(
+              () => {
+                this.createSpaceForm.controls.name.setValue('')
+                this.createSpaceForm.controls.templates.setValue('')
+                this.cmsapiServce.getUserSpaces().subscribe(
+                  {
+                    next: () => {
+                      this.showLoading = false
+                      this.selectedSpaceService.setSelectedSpaceid(newspace.guid)
+                      this.selectedSpaceService.setSelectedAccessid('')
+                    },
+                    complete: () => {
+                      this.switchTabevent.emit(0)
+                    }
+                    
+                  }
+                )
+              }, 500
+              )
+                        
           }
         }
       )
