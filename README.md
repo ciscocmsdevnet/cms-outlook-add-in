@@ -13,6 +13,7 @@ Let's dive 🐬 in...
     - [Middleware Setup](#middleware-setup)
     - [Add-In Support](#add-in-support)
     - [Add-In Config Parameters](#add-in-config-parameters)
+      - [CMS Readiness](#cms-readiness)
   - [Deployment Steps [Online]](#deployment-steps-online)
     - [Stage 1: Generate Certificates](#stage-1-generate-certificates)
     - [Stage 2: Deploy Middleware](#stage-2-deploy-middleware)
@@ -27,12 +28,12 @@ Let's dive 🐬 in...
 
 ## Disclaimer: 
 
-* PLEASE DO NOT USE ADD-IN WHEN YOUR CMS CLUSTER IS BUSY SERVING MEETINGS WHEN TESTING
+* PLEASE DO NOT SCALE TEST THIS ADD-IN WHEN YOUR CMS CLUSTER IS BUSY SERVING MEETINGS
 * DO NOT DEPLOY THIS MIDDLEWARE IN DMZ, AS WE HAVE NOT EVALUATED ANY SECURITY REQUIREMENT FOR THIS SOLUTION. 
 * NO CISCO TAC SUPPORT WILL BE PROVIDED FOR THIS ADD-IN. PLEASE REACH OUT TO `cmsdevelopers@cisco.com` IF YOU INTEND TO DEPLOY IN CERTAIN RESTRICTED ENVIRONMENT.
-* DOCKER IMAGES CAN BE PROVIDED IF YOU HAVE AIRGAP NETWORK AND CANNOT CREATE IMAGES. PLEASE REACH OUT TO `cmsdevelopers@cisco.com`. THESE IMAGES WILL BE VERIFIED AGAINST  DOCKER-SCAN-PLUGIN AVAILABLE FROM DOCKER HUB. THEY WILL NOT BE CISCO APPROVED DOCKER IMAGES.
+* DOCKER IMAGES CAN BE PROVIDED IF YOU HAVE AIRGAP NETWORK AND CANNOT CREATE IMAGES. PLEASE REACH OUT TO `cmsdevelopers@cisco.com`. THESE IMAGES WILL BE VERIFIED AGAINST DOCKER-SCAN-PLUGIN AVAILABLE FROM DOCKER HUB. THEY WILL NOT BE CISCO APPROVED DOCKER IMAGES.
 * PLEASE DO NOT ATTEMPT TO TRY THIS ON ANY PRODUCTION SYSTEM, UNTIL YOU HAVE DONE EXTENSIVE TESTING YOURSELF (_trust your testing_)
-* YOU DO NOT NEED ANY ADDITIONAL LICENSES TO MAKE THIS ADD-IN WORK WITH CMS. WE USE CMS PMP AND SMP LICENSE FOR CREATING SPACES
+* YOU DO NOT NEED ANY ADDITIONAL LICENSES TO MAKE THIS ADD-IN WORK WITH CMS. WE USE CMS `pmp` AND `smp` LICENSE FOR CREATING SPACES
 
 ## Solution Highlights:
 
@@ -46,16 +47,17 @@ Let's dive 🐬 in...
   - Acts like a bridge between Outlook Client and your CMS Environment
   - It provides you with all logs for troubleshooting
   - It does not store any credentials
-  - Store user meeting formation in Redis Cache DB, to save un-necessary API Requests to CMS.
+  - Stores user meeting formation in Redis Cache DB, to save un-necessary API Requests to CMS.
   
-- The login session in this Add-in is valid for 24 hours, as a result user may need to login every 24 hour.
-- This Add-In is tested and works in completely air-gap network also.
+- The login session in Add-in is valid for 24 hours, as a result user may need to login every 24 hour.
+- This Add-In is tested and works in air-gap environments also.
 
 
 ## Pre-requisites:
-- An Ubuntu machine with 2gb RAM, 2vCPU, 50GB hard disk.
+- An Ubuntu machine with minimum 2GB RAM, 2vCPU, 50GB hard disk. 
 
 ### Middleware Setup
+
 - **Install docker, docker-compose and openssl**. Logout and Login after running these commands
 ```sh
 sudo apt-get update && sudo apt-get install docker.io openssl
@@ -65,6 +67,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
+
 - **Internal CA Signed Certificate** (Outlook Add-In only communicates via Https, hence we need certificate to be signed by CA, which your organisation trusts)
 - A **hostname** for the middleware (everybody needs a name 😝)
 - Network reachability between Outlook clients to Middleware to CMS Infrastructure
@@ -94,7 +97,7 @@ ALLOWED_DOMAINS=<middleware hostname>
 PROVISIONED_COSPACES=<True, if user have provionsioned co-spaces>
 INVITATION_LANG=<Language support for invitation>
 ```
-> Sample `config.env` for reference:
+> Sample `config.env` for reference (backend):
 ```env
 WEB_ADMIN=https://abc.cisco.com
 WEB_ADMIN_USERNAME=admin
@@ -113,16 +116,23 @@ INVITATION_LANG=en_GB
 ```
 BACKEND_URL=https://<middleware hostname>/addin/v1
 ```
-> Sample `config.env` for reference:
+> Sample `config.env` for reference(frontend):
 ```
 BACKEND_URL=https://middleware.cisco.com/addin/v1
 ```
+
+#### CMS Readiness
+
+- In order to use this Add-In effectively, make sure you have
+  - coSpace Template created on your CMS
+  - CallLegProfiles assigned to you coSpace Template
+  - User provisioned coSpaces when using web app for users
 
 ## Deployment Steps [Online]
 
 ### Stage 1: Generate Certificates
 
-1. Get a hostname for your middleware service, eg: cmsscheduler.abc.com
+1. Get a hostname for your middleware service, eg: middleware.cisco.com
 2. Add DNS entry for this hostname in your DNS server OR your system's  `/etc/host` file
 3. Login to your linux machine and follow below steps:
    1. Clone this repository: `git clone https://github.com/ciscocmsdevnet/cms-outlook-add-in.git`
@@ -165,7 +175,7 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
 
 - For deployments with no internet access to create images, follow below steps:
 
-1. Download the images from folder: `cisco.box.com`. Reach out to `cmsdevelopers@cisco.com` if you do not have access
+1. Reach out to `cmsdevelopers@cisco.com` to get access to docker images. A Cisco box link will be created for you to download images
 2. Load the images: `docker load --input cmsschedular.tar`
 3. create a file `backend-config.env` and copy backend mentioned in [Add-In Config Parameters](#add-in-config-parameters). Please use values relevant to your environment
 4. create file `frontend-config.env` and copy frontend configs mentioned [Add-In Config Parameters](#add-in-config-parameters).Please use values relevant to your environment
