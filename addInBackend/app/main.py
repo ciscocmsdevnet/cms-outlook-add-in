@@ -2,6 +2,7 @@ import redis
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import urllib3
+from os import environ
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import uvicorn

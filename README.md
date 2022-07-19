@@ -1,4 +1,5 @@
 # Cisco Meeting Server Outlook Add-In
+**Get CMS Meeting Information while scheduling Outlook meeting**
 
 Cisco Meeting Server is an on-premies meeting server. This Add-In is created using CMS API's 👀, some Python 🐍 and some JavaScript 𝒥. We have released a new version, better than our PoC version, keeping simple deployments, easy of use in mind🧠 .
 
@@ -145,6 +146,7 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
 
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
+> *Snapshot 1*
 ![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
 
 ### Stage 2: Deploy Middleware
