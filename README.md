@@ -147,7 +147,7 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
 **Note**: Make sure CA signed certificate ends with .cer extension. If incase you receive .crt certificate from your CA, refer this link on how to convert [(How can I convert a certificate file from .crt to .cer? | SonicWall)](https://www.sonicwall.com/support/knowledge-base/how-can-i-convert-a-certificate-file-from-crt-to-cer/170504597576961/)
 
 > *Snapshot 1*
-![image](https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png)
+https://user-images.githubusercontent.com/40081345/164265718-abe7afa5-390a-4e57-93ec-62e7a538d7da.png
 
 ### Stage 2: Deploy Middleware
 
@@ -160,7 +160,7 @@ BACKEND_URL=https://middleware.cisco.com/addin/v1
    1. `docker-compose up -d`
    2. Make sure all containers are up by : `docker-compose ps`
 
-![image](https://user-images.githubusercontent.com/40081345/179026855-879b7a5c-c1f5-48ca-adbd-bbbb7a7ae8ee.png")
+https://user-images.githubusercontent.com/40081345/179026855-879b7a5c-c1f5-48ca-adbd-bbbb7a7ae8ee.png"
 
 	
 ### Stage 3: Modify Outlook Manifest files
