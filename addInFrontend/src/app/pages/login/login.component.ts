@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthResponseData, AuthService } from '../../services/auth.service';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ErrmessagesService } from 'src/app/services/errmessages.service';
+import { OutlookService } from 'src/app/services/outlook.service';
 
 
 @Component({
@@ -11,50 +12,72 @@ import { ErrmessagesService } from 'src/app/services/errmessages.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isLoading = false;
-  error: string = '';
+  tokenisexpired$!: Observable<Boolean>;
 
-  constructor(private router: Router, 
+  loginForm = this.fb.group({
+    email: ['', Validators.email],
+    password: ['', Validators.required]
+  });
+
+  error$!: Observable<string>;
+
+  constructor(private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
-    private errmessageService: ErrmessagesService) {}
- 
+    private errmessageService: ErrmessagesService,
+    private outlookService: OutlookService,
+    private fb: FormBuilder
+  ) {
+  }
 
-  onLogin(form: NgForm): void {
+  ngOnInit(): void {
+    this.error$ = this.errmessageService.error$
+    this.outlookService.get_outlook_username()
+    this.outlookService.loginusername$.subscribe(
+      {
+        next: (email) => {
+          this.loginForm.controls.email.setValue(email)
+        }
+      }
+    )
+    this.tokenisexpired$ = this.authService.tokenisexpired$
+  }
+
+  reset() {
+    this.authService.logout()
+  }
+
+  onLogin(): void {
+    this.isLoading = true;
     this.errmessageService.showError('');
-    if (!form.valid) {
+    if (!this.loginForm.valid) {
+      this.errmessageService.showError('Form is not valid');
       return;
     }
-    const email = form.value.email;
-    const password = form.value.password;
-    const webbridge = form.value.webbridge;
+    const email = this.loginForm.controls.email.value!;
+    const password = this.loginForm.controls.password.value!;
+    const webbridge = this.route.snapshot.paramMap.get('webbridge')!;
+    this.loginForm.controls.email.disable();
+    this.loginForm.controls.password.disable();
 
-    let authObs: Observable<AuthResponseData>;
+    this.authService.login(email, password, webbridge).subscribe(
+      {
+        next: () => {
+          this.isLoading = false;
+          this.loginForm.controls.email.enable();
+          this.loginForm.controls.password.enable();
+          this.router.navigate(['/preferences']);
+        },
+        error: () => {
+          this.isLoading = false;
+          this.loginForm.controls.email.enable();
+          this.loginForm.controls.password.enable();
+        }
+      }
+    );
 
-    this.isLoading = true;
-    form.controls['webbridge'].disable();
-    form.controls['email'].disable();
-    form.controls['password'].disable();
-
-    authObs = this.authService.login(email, password, webbridge);
-
-    authObs.subscribe({
-      next: (resData) => {
-        console.log(resData);
-        this.isLoading = false;
-        form.controls['webbridge'].enable();
-        form.controls['email'].enable();
-        form.controls['password'].enable();
-        this.router.navigate(['/preferences']);
-      },
-      error: () => {
-        this.isLoading = false;
-        form.controls['webbridge'].enable();
-        form.controls['email'].enable();
-        form.controls['password'].enable();
-      },
-      complete: () => console.info('complete') 
-    });
   }
 
 }

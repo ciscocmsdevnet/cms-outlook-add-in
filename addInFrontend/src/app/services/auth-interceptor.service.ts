@@ -18,24 +18,24 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   constructor(private authService: AuthService) {
     this.authService.user$.subscribe(
-        (user) => { 
-            this.webbridge = user.webbridge;
-            this.token = user.token;
-        }
-      )
-   
+      (user) => {
+        this.webbridge = user.webbridge;
+        this.token = user.token;
+      }
+    )
+
   }
 
 
-    intercept(request: HttpRequest<any>, next: HttpHandler) {
-        
-        const isApiUrl = request.url.startsWith(this.webbridge);
-        
-        if (this.token && isApiUrl) {
-            request = request.clone({
-                setHeaders: { Authorization: `Bearer ${this.token}` }
-            });
-        }
-        return next.handle(request);
+  intercept(request: HttpRequest<any>, next: HttpHandler) {
+
+    const isApiUrl = request.url.startsWith(this.webbridge);
+
+    if (this.token && isApiUrl) {
+      request = request.clone({
+        setHeaders: { Authorization: `Bearer ${this.token}` }
+      });
     }
+    return next.handle(request);
+  }
 }

@@ -109,6 +109,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+addInFrontend/src/assets/env.js
 
 # Spyder project settings
 .spyderproject
@@ -131,5 +132,9 @@ dmypy.json
 ## Ignore certs folder
 certs/
 
-## MAC files
+node_modules/
+.angular/
 .DS_Store
+.vscode/
+addInFrontend/.DS_Store
+addInFrontend/src/.DS_Store

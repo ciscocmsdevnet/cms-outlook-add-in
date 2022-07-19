@@ -1,16 +1,15 @@
 
 export interface Preferences {
-     defaultspace: Space,
-     defaultaccessmethod: AccessMethod,
+     defaultspaceGUID: string,
+     defaultaccessmethodGUID: string,
 }
 
 export interface Space {
      guid: string,
-     name: string,
-     uri: string
+     name: string
 }
 
-export interface Template {
+export interface SpaceTemplate {
      id: string,
      name: string
 }
@@ -21,11 +20,17 @@ export interface AccessMethod {
      uri: string
 }
 
-export interface AccessMethodResponse{
+export interface AccessMethodResponse {
      accessMethods: AccessMethod[]
 }
 
-export interface InvitationResponse{
-     invitation: string  
+export interface InvitationResponse {
+     invitation: string
      language: string
+}
+
+export interface NewSpaceResponse {
+     guid: string,
+     name: string,
+     accessMethods: AccessMethod[]
 }

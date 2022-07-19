@@ -20,10 +20,11 @@ export class MessagesComponent implements OnInit {
   ngOnInit(): void {
     this.error$ = this.errmessagesService.error$.pipe(
       tap(() => {
-        this.showError = true})
+        this.showError = true
+      })
     )
     this.message$ = this.errmessagesService.message$.pipe(
-      tap(() => {this.showMessage = true})
+      tap(() => { this.showMessage = true })
     )
   }
 
@@ -31,7 +32,7 @@ export class MessagesComponent implements OnInit {
     this.showError = false;
   }
 
-  onCloseMessage(){
+  onCloseMessage() {
     this.showMessage = false;
   }
 

@@ -1,0 +1,12 @@
+.usercircle {
+    display:inline-block;
+    font-size:2em;
+    width:2em;
+    height:2em;
+    line-height:2em;
+    text-align:center;
+    border-radius:50%;
+    background:plum;
+    vertical-align:middle;
+    color:white;
+}

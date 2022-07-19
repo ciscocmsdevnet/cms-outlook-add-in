@@ -8,14 +8,21 @@ import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { PreferencesComponent } from './pages/preferences/preferences.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 import { CmsapiService } from './services/cmsapi.service';
-import { ButtonComponent } from './shared/button/button.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { OutlookService } from './services/outlook.service';
 import { ErrmessagesService } from './services/errmessages.service';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { AuthService } from './services/auth.service';
+import { SelectsiteComponent } from './pages/selectsite/selectsite.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { UserHeaderComponent } from './pages/preferences/user-header/user-header.component';
+import { SelectSpaceComponent } from './pages/preferences/select-space/select-space.component';
+import { NewSpaceComponent } from './pages/preferences/new-space/new-space.component';
+import { CommandsComponent } from './pages/commands/commands.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSelectModule } from '@angular/material/select';
+import { SelectedSpaceService } from './services/selected-space.service';
 
 
 @NgModule({
@@ -24,10 +31,12 @@ import { AuthService } from './services/auth.service';
     WelcomeComponent,
     LoginComponent,
     PreferencesComponent,
-    LoadingSpinnerComponent,
-    ButtonComponent,
     MessagesComponent,
-    // CommandsComponent,
+    SelectsiteComponent,
+    UserHeaderComponent,
+    SelectSpaceComponent,
+    NewSpaceComponent,
+    CommandsComponent,
     
   ],
   imports: [
@@ -35,13 +44,17 @@ import { AuthService } from './services/auth.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTabsModule,
+    NoopAnimationsModule,
+    MatSelectModule,
   ],
   providers: [
     AuthService,
     CmsapiService,
     OutlookService,
     ErrmessagesService,
+    SelectedSpaceService,
     // {
     //   provide: HTTP_INTERCEPTORS,
     //   useClass: AuthInterceptorService,

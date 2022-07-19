@@ -1,181 +1,87 @@
-import requests
-import json
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import logging
-from requests.exceptions import ConnectionError
+import redis
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import urllib3
 from os import environ
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-class loginPayload(BaseModel):
-    webBridgeURL: str
-    username: str
-    password: str
+import uvicorn
+from resource import panelAPI, getmeetingAPI, template, deleteStored
+import config
+import logging as log
 
-class getSpacesInput(BaseModel):
-  webBridgeURL: str
-  authToken: str
+log.basicConfig(level="INFO")
 
-class getSpaceAccessMethodInput(getSpacesInput):
-  spaceGUID: str
-
-class getMeetingEmailInvitationInput(getSpaceAccessMethodInput):
-    accessMethodGUID: str
-
-class userInfoPayload(getSpacesInput):
-    username: str
-
-app = FastAPI()
-
-# Allow CORS from these origins
-
-Hostname = 'lx346913.dc.polisen.se'
-
-allowedDomains = ['localhost','127.0.0.1', Hostname]
-
-origins = []
-for domains in allowedDomains:
-  origins.append(f"https://{domains}:9443")
-  origins.append(f"https://{domains}:4200")
-  origins.append(f"https://{domains}")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
+app = FastAPI(
+    title="CMS Outlook Add-In",
+    description="CMS Outlook Add-In Backend Service Fast API",
+    version="1.0.0",
+    docs_url=f"{config.URL_PREFIX}/internalServiceAddIn/docs",
 )
 
-@app.post("/login/")
-async def addInLogin(userData: loginPayload):
-
-    web_bridge_url = f"https://{userData.webBridgeURL}/api/auth"
-
-    payload = json.dumps({
-      "username": userData.username,
-      "password": userData.password,
-      "trace": False
-    })
-    headers = {
-      'Content-Type': 'application/json'
-    }
-    try:
-      response = requests.request("POST", web_bridge_url, headers=headers, data=payload, verify=False)
-
-    except ConnectionError:
-      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
-    except Exception as loginEx:
-      print (f"Exception occured while login: {loginEx}")
+def configure(app):
+    configure_routing(app)
+    app.redis_db = configure_db()
+    app.refresh_client = configure_db
+    app.add_middleware(
+              CORSMiddleware,
+              allow_origins=config.origins,
+              allow_credentials=True,
+              allow_methods=["*"],
+              allow_headers=["*"]
+            )
+    
+    ## Making Sure connectivity to CMS and Whats used for Instant meetings
+    if configure_templates(app.redis_db):
+        log.info("Base Configuration Completed")
+        return app
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}, user: {userData.username} ")
-      if response.status_code == 401:
-        raise HTTPException(status_code=401, detail="Invalid username/password provided")
-      elif response.status_code == 307:
-        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
-      elif response.status_code == 200:
-        return response.json()
+        exit()
 
 
-@app.post("/getUserSpaces/")
-async def getSpaces(getSpacesInput: getSpacesInput):
+def configure_routing(app):
+    app.include_router(panelAPI.router, prefix=config.URL_PREFIX)
+    app.include_router(getmeetingAPI.router, prefix=config.URL_PREFIX)
+    app.include_router(deleteStored.router, prefix=config.URL_PREFIX)
+  
 
-    web_bridge_url = f"https://{getSpacesInput.webBridgeURL}/api/cospaces"
 
-    headers = {'Authorization': f'Bearer {getSpacesInput.authToken}'}
-
+def configure_db():
     try:
-      response = requests.request("GET", web_bridge_url, headers=headers, verify=False)
-      
+        REDIS_URL = f"redis://{config.REDIS_USER}:{config.REDIS_PASS}@{config.REDIS_HOST}:{config.REDIS_PORT}"
+        
+        client = redis.StrictRedis.from_url(
+            f"{REDIS_URL}/0", encoding="utf-8", decode_responses=True
+        )
 
-    except ConnectionError:
-      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
-    except Exception as getSpaceExc:
-      print (f"Exception occured while getting spaces: {getSpaceExc}")
+        ping = client.ping()
+        log.info(f"DB PING: {ping}")
+
+        if ping is True:
+            return client
+        log.warning("Redis Cache Not Started")
+
+    except redis.AuthenticationError:
+        log.error("AuthenticationError: Redis Cache not started")
+
+def configure_templates(dbconn):
+
+    if config.PROVISIONED_COSPACES:
+        log.info("Instant Meeting Set to pick user provisioned coSpaces")
+    
+    if config.SPACE_TEMPLATE:
+        if template.extractCoSpaceTemplateinfo(dbconn):
+            log.info ("Space Template and Access Methods Found.. Will be used to create coSpaces")
+            if template.extractWebBridgeProfiles():
+                log.warning ("Meeitng URL generated")
+                return True
+            return True
+        else:
+            return False
     else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
-      if response.status_code == 401:
-        raise HTTPException(status_code=401, detail="Invalid username/password provided")
-      elif response.status_code == 307:
-        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
-      elif response.status_code == 200:
-        return response.json()
+        return True
 
-@app.post("/getSpaceAccessMethods/")
-async def getSpaceAccessMethod(getSpaceAccessMethodInput: getSpaceAccessMethodInput):
+app = configure(app)
 
-    web_bridge_url = f"https://{getSpaceAccessMethodInput.webBridgeURL}/api/cospaces/{getSpaceAccessMethodInput.spaceGUID}"
-
-    headers = {'Authorization': f'Bearer {getSpaceAccessMethodInput.authToken}'}
-
-    try:
-      response = requests.request("GET", web_bridge_url, headers=headers, verify=False)
-
-    except ConnectionError:
-      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
-    except Exception as getSpaceAMExc:
-      print (f"Exception occured while getting spaces access methods: {getSpaceAMExc}")
-    else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
-      if response.status_code == 401:
-        raise HTTPException(status_code=401, detail="Invalid username/password provided")
-      elif response.status_code == 400:
-        raise HTTPException(status_code=400, detail="Invalid Space GUID Provided")
-      elif response.status_code == 307:
-        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
-      elif response.status_code == 200:
-        return response.json()
-
-
-@app.post("/getMeetingInformation/")
-async def getMeetingInformation(getMeetingEmailInvitationInput: getMeetingEmailInvitationInput):
-
-    web_bridge_url = f"https://{getMeetingEmailInvitationInput.webBridgeURL}/api/cospaces/{getMeetingEmailInvitationInput.spaceGUID}/accessMethods/{getMeetingEmailInvitationInput.accessMethodGUID}/emailInvitation"
-
-    payload = json.dumps({"language": f"{environ['LANG']}"})
-
-    headers = {'Authorization': f'Bearer {getMeetingEmailInvitationInput.authToken}'}
-
-    try:
-      response = requests.request("POST", web_bridge_url, headers=headers,data=payload, verify=False)
-
-    except ConnectionError:
-      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
-    except Exception as getMeetingLinkExc:
-      print (f"Exception occured while getting meeting Link: {getMeetingLinkExc}")
-    else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
-      if response.status_code == 401:
-        raise HTTPException(status_code=401, detail="Invalid username/password provided")
-      elif response.status_code == 503:
-        raise HTTPException(status_code=503, detail="Retry after 1 min")
-      elif response.status_code == 400:
-        raise HTTPException(status_code=400, detail="Invalid Space GUID or Access Method GUID Provided")
-      elif response.status_code == 307:
-        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
-      elif response.status_code == 200:
-        return response.json()
-
-@app.post("/validate")
-async def getUserInfo(userData: userInfoPayload):
-
-    web_bridge_url = f"https://{userData.webBridgeURL}/api/userLookup?query={userData.username}"
-
-    headers = {'Authorization': f'Bearer {userData.authToken}'}
-    try:
-      response = requests.request("GET", web_bridge_url, headers=headers, verify=False)
-
-    except ConnectionError:
-      raise HTTPException(status_code=400, detail="Invalid web bridge URL provided")
-    except Exception as validationEx:
-      print (f"Exception occured while validating Auth token: {validationEx}")
-    else:
-      logging.warning(f"URL: {web_bridge_url}, Response_Status: {response.status_code}")
-      if response.status_code == 401:
-        raise HTTPException(status_code=401, detail="Invalid username/password provided")
-      elif response.status_code == 307:
-        return HTTPException(status_code=307, detail="Temporary Redirection, please try after some time")
-      elif response.status_code == 200:
-        return response.json()
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host="0.0.0.0", port=9443, reload=True)

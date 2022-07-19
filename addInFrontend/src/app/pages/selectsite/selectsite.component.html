@@ -1,0 +1,45 @@
+<div class="base-margin">
+    <form class="form-group" [formGroup]="webbridgeForm" (ngSubmit)="onNext()">
+        <div class="section">
+            <h5 class="text-weight-600">Which CMS web app site do you want to use?</h5>
+        </div>
+        <div class="section">
+            <div *ngIf="(meetinglist$ | async); else loading">
+                <div class="form-group" *ngFor="let item of (meetinglist$| async); index as i">
+                    <label class="radio">
+                        <input id="i.toString()" type="radio" formControlName="radio" (change)="changeSelection()"
+                            [value]="item">
+                        <span class="radio__input"></span>
+                        <span class="radio__label">{{item}}</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <div class="form-group__text base-margin-left">
+                        <input id="webbridge" type="text" placeholder="Web-bridge URL" formControlName="input">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <div class="dbl-margin-top">
+                            <button class="btn btn--justified" type="submit" [innerText]="'Next'"
+                                [disabled]="!webbridgeForm.valid" title="Next"></button>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<ng-template #loading>
+    <div class="text-center">
+        <div class="loader loader--small flex flex-center">
+            <div class="wrapper">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </div>
+</ng-template>

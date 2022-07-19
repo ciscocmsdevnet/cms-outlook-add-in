@@ -1,35 +1,47 @@
-<div class="alert alert-danger" *ngIf="error">
-  <p>{{ error }}</p>
-</div>
-<div *ngIf="isLoading" style="text-align: center;">
-  <app-loading-spinner></app-loading-spinner>
-</div>
-
-
-<div class="center ms-welcome__main">
-  <form #authForm="ngForm" (ngSubmit)="onLogin(authForm)">
-    <h4>Which CMS web app site do you want to use?</h4>
-    <div class="form-group">
-      <!-- <label for="webbridge">Enter webbridge hostname</label> -->
-      <input type="webbridge" id="webbridge" class="form-control" placeholder="Web-bridge URL" ngModel name="webbridge"
-        required />
+<div class="base-margin">
+  <form class="form-group" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div class="section">
+      <h5 class="text-weight-600">Provide your Username/Password</h5>
     </div>
-    <br>
-    <h4>Provide your Username/Password</h4>
-
-    <div class="form-group">
-      <!-- <label for="email">Username:</label> -->
-      <input type="email" id="email" class="form-control" placeholder="Username" ngModel name="email" required email />
+    <div class="section">
+      <div class="form-group">
+        <div class="form-group__text">
+          <label for="email">Username:</label>
+          <input type="email" id="email" placeholder="username@domain" formControlName="email" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-group__text">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" />
+        </div>
+      </div>
+      <div class="section">
+        <span class="text-weight-500 text-italic">* we do not store any credentials</span>
+      </div>
     </div>
-    <div class="form-group">
-      <!-- <label for="password">Password:</label> -->
-      <input type="password" id="password" class="form-control" placeholder="Password" ngModel name="password"
-        required />
-    </div>
-    <span class="ms-font-m">* we do not store any credentials</span>
 
-    <footer class="first-foot-btn">
-      <app-button class="btnFull" type="submit" [label]="'Login'" [disabled]="!authForm.valid"></app-button>
-    </footer>
+    <div class="row">
+      <div class="col-1"></div>
+      <div class="col-10">
+        <div class="dbl-margin-top">
+          <button *ngIf="!isLoading;else loading" class="btn btn--justified" type="submit" [innerText]="'Login'"
+            [disabled]="!loginForm.valid" title="Login"></button>
+        </div>
+      </div>
+      <div class="col-1"></div>
+    </div>
+
   </form>
+  <div class="row section flex flex-center" *ngIf="(tokenisexpired$ | async) || (error$ | async)">
+    <button class="row btn btn btn--link" [innerText]="'Reset Add-In'" title="Reset Add-In" (click)="reset()"> </button>
+  </div>
 </div>
+
+<ng-template #loading>
+  <div class="loading-dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</ng-template>

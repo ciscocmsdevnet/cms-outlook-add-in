@@ -4,7 +4,7 @@
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="MailApp">
   <Id>a1e39d18-e495-4cd1-b88f-86758a5a772d</Id>
-  <Version>1.0.0.0</Version>
+  <Version>1.1.0.0</Version>
   <ProviderName>Cisco DevNet</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="CMS Meeting Scheduler"/>
@@ -66,7 +66,7 @@
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
-                <!-- <Control xsi:type="Button" id="ActionButton">
+                <Control xsi:type="Button" id="ActionButton">
                   <Label resid="ActionButton.Label"/>
                   <Supertip>
                     <Title resid="ActionButton.Label"/>
@@ -80,7 +80,7 @@
                   <Action xsi:type="ExecuteFunction">
                     <FunctionName>action</FunctionName>
                   </Action>
-                </Control> -->
+                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -94,17 +94,17 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://raiatea.cisco.com/assets/icon-64.png"/>
       </bt:Images>
       <bt:Urls>
-        <!-- <bt:Url id="Commands.Url" DefaultValue="https://raiatea.cisco.com/commands"/> -->
+        <bt:Url id="Commands.Url" DefaultValue="https://raiatea.cisco.com/#/commands"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://raiatea.cisco.com"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Cisco Meeting Server"/>
         <bt:String id="TaskpaneButton.Label" DefaultValue="Meeting Preferences"/>
-        <!-- <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/> -->
+        <bt:String id="ActionButton.Label" DefaultValue="Add Meeting"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Set Preferences for CMS Meetings."/>
-        <!-- <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/> -->
+        <bt:String id="ActionButton.Tooltip" DefaultValue="Get CMS Meeting Link Instantly"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

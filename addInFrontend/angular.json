@@ -30,11 +30,11 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "src/fabric.min.css"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.css"
             ],
             "scripts": [
-              "src/office.js"
+              "src/js/commands.js"
             ]
           },
           "configurations": {
@@ -100,16 +100,15 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "src/fabric.min.css"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.css"
             ],
             "scripts": [
-              "src/office.js"
+              "src/js/commands.js"
             ]
           }
         }
       }
     }
-  },
-  "defaultProject": "cms-scheduler-outlookaddin-web"
+  }
 }
