@@ -30,7 +30,7 @@ app = FastAPI()
 
 # Allow CORS from these origins
 
-Hostname = '<Hostname>'
+Hostname = 'lx346913.dc.polisen.se'
 
 allowedDomains = ['localhost','127.0.0.1', Hostname]
 
